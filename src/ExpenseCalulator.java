@@ -27,7 +27,7 @@ public class ExpenseCalulator implements Expenser {
 
 	@Override
 	public void PrintIncomereport() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stu
 		
 	}
 
