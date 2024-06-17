@@ -4,7 +4,6 @@ public class User {
 	private ArrayList <Currency>currencyRates;
 	private ArrayList <Wage>Income;  // user income sources that user can record or view or search by type or month 
 	private ArrayList <Expense>Spending; //user's expenses 
-	private ArrayList<Transaction> transactions;
 
 	String username;
 	String pwd;
@@ -15,18 +14,28 @@ public class User {
 	//should add constructor(s)
 	public User(String username,String password){
 		this.username = username;
-		this.transactions = new ArrayList<>();
+		this.pwd = password;
+		this.Income = new ArrayList<>();
+		this.Spending = new ArrayList<>();
 	}
 
 	public String getUserName(){
 		return username;
 	}
 
-	public ArrayList<Transaction> getTransactions(){
-		return transactions;
+	public ArrayList<Wage> getWages(){
+		return Income;
 	}
 
-	public void addTransaction(Transaction transaction){
-		transactions.add(transaction);
+	public ArrayList<Expense> getExpenses(){
+		return Spending;
+	}
+
+	public void addWage(Wage wage){
+		Income.add(wage);
+	}
+
+	public void addExpense(Expense expense){
+		Spending.add(expense);
 	}
 }

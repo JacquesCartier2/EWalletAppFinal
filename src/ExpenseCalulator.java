@@ -22,20 +22,21 @@ public class ExpenseCalulator implements Expenser {
 		// TODO Auto-generated method stub
 		double totalIncome = 0;
 		double totalExpense = 0;
-		ArrayList<Transaction> incomeTransactions = new ArrayList<>();
-		ArrayList<Transaction> expenseTransactions = new ArrayList<>();
+		ArrayList<Wage> incomeTransactions = new ArrayList<>();
+		ArrayList<Expense> expenseTransactions = new ArrayList<>();
 		
 		// Process transactions for all users
 		for(User User : Users){
-			for(Transaction transaction : User.getTransactions()){
-				if(transaction.getType().equalsIgnoreCase("income")){
-					totalIncome += transaction.getAmount();
-					incomeTransactions.add(transaction);
-				} else if(transaction.getType().equalsIgnoreCase("expenses")){
-					totalExpense += transaction.getAmount();
-					expenseTransactions.add(transaction);
+			for(Wage wage : User.getWages()){
+				totalIncome += wage.getAmount();
+				incomeTransactions.add(wage);
+			} 
+			for(Expense expense : User.getExpenses()){
+				double annualExpense = expense.getAmount() * expense.getYearlyFrequency();
+				totalExpense += annualExpense;
+				expenseTransactions.add(expense);
 				}
-			}
+			
 		}
 
 		// Calculate summary info
@@ -45,13 +46,13 @@ public class ExpenseCalulator implements Expenser {
 		System.out.println("DETAILED REPORT");
 
 		System.out.println("\nIncome:");
-		for(Transaction income : incomeTransactions){
-			System.out.println("- " + income.getDescription() + ": $" + income.getAmount());
+		for(Wage income : incomeTransactions){
+			System.out.println("- " + income.getSource() + ": $" + income.getAmount() + "(" + income.getMonth() + ")");
 		}
 
 		System.out.println("\nExpenses:");
-		for(Transaction expense : expenseTransactions){
-			System.out.println("- " + expense.getDescription() + ": $" + expense.getAmount());
+		for(Expense expense : expenseTransactions){
+			System.out.println("- " + expense.getSource() + ": $" + expense.getAmount() + "(Frequency: " + expense.getYearlyFrequency() + ")");
 		}
 
 		// Print summary info
