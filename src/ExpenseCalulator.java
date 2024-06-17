@@ -20,7 +20,45 @@ public class ExpenseCalulator implements Expenser {
 	@Override
 	public void PrintFullreport() {
 		// TODO Auto-generated method stub
+		double totalIncome = 0;
+		double totalExpense = 0;
+		ArrayList<Transaction> incomeTransactions = new ArrayList<>();
+		ArrayList<Transaction> expenseTransactions = new ArrayList<>();
 		
+		// Process transactions for all users
+		for(User User : Users){
+			for(Transaction transaction : User.getTransactions()){
+				if(transaction.getType().equalsIgnoreCase("income")){
+					totalIncome += transaction.getAmount();
+					incomeTransactions.add(transaction);
+				} else if(transaction.getType().equalsIgnoreCase("expenses")){
+					totalExpense += transaction.getAmount();
+					expenseTransactions.add(transaction);
+				}
+			}
+		}
+
+		// Calculate summary info
+		double netBalalnce = totalIncome - totalExpense;
+		
+		// Print detailed report
+		System.out.println("DETAILED REPORT");
+
+		System.out.println("\nIncome:");
+		for(Transaction income : incomeTransactions){
+			System.out.println("- " + income.getDescription() + ": $" + income.getAmount());
+		}
+
+		System.out.println("\nExpenses:");
+		for(Transaction expense : expenseTransactions){
+			System.out.println("- " + expense.getDescription() + ": $" + expense.getAmount());
+		}
+
+		// Print summary info
+		System.out.println("\nSUMMARY");
+		System.out.println("Total Income: $" + totalIncome);
+		System.out.println("Total Expenses: $" + totalExpense);
+		System.out.println("Net Balance: $" + netBalalnce);
 	}
 
 	@Override
