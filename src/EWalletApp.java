@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JDesktopPane;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 
 public class EWalletApp extends JFrame{
 	//this is the app class, has the GUI and create one object of your expense calculator class. The expense calculator class is the implementation of the Expenser interface 
@@ -114,6 +115,14 @@ public class EWalletApp extends JFrame{
 		JButton btnFinacialReport = new JButton("My Financial Report");
 		btnFinacialReport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				User user = getUserObject(CurrentUser);
+				if(user != null){
+					expenserCalulator.PrintFullreport(user);
+
+				} else {
+					JOptionPane.showMessageDialog(null, "User Not Found!");
+
+				}
 			}
 		});
 		btnFinacialReport.setBounds(280, 42, 149, 31);
