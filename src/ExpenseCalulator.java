@@ -1,19 +1,19 @@
 import java.util.ArrayList;
 
 public class ExpenseCalulator implements Expenser {
-
-	ArrayList<User> Users = new ArrayList<>();
 	
 	@Override
-	public void addExpense(Expense Ex) {
-		// TODO Auto-generated method stub
+	public void addExpense(User user, String source, double amount, int yearlyfrequency) {
+		Expense expense = new Expense(source, amount, yearlyfrequency);
 		
+		user.addExpense(expense);
 	}
 
 	@Override
-	public void addMonthlyIncome(Wage W) {
-		// TODO Auto-generated method stub
+	public void addMonthlyIncome(User user, String source, double amount, String month) {
+		Wage income = new Wage(source, amount, month);
 		
+		user.addWage(income);
 	}
 
 	@Override

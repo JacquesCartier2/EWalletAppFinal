@@ -34,4 +34,9 @@ public class Expense {
 	public void setYearlyfrequency(int yearlyfrequency) {
 		this.yearlyfrequency = yearlyfrequency;
 	}
+	
+	@Override
+    public String toString() {
+        return "Expense [source=" + source + ", amount=" + amount + ", yearlyfrequency=" + yearlyfrequency + "]";
+    }
 }
