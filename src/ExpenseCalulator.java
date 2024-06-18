@@ -90,26 +90,34 @@ public class ExpenseCalulator implements Expenser {
 	}
 
 	@Override
-	public Currency convertForeignCurrency(Currency C, double amount) {
+	public double convertForeignCurrency(Currency C, double amount) {
 
 		// Convert to Canadian Dollar CAD
 		final double CADRATE = 1.37;
 		final double USDRATE = 0.73;
+		double outAmount = 0;
 
 		// to Canadian Dollar
 		if (C.getName().equals("USD")) {
-			C.setRate(USDRATE);
+			C.setRate(CADRATE);
 			C.setName("CAD");
+
+			outAmount = CADRATE * amount;
+			return outAmount;
 
 		}
 		// to US Dollar
 		if (C.getName().equals("CAD")) {
 			C.setRate(USDRATE);
 			C.setName("USD");
+
+			outAmount = USDRATE * amount;
+
 		}
+		// need to use printf to limit decmail places
+		return outAmount;
 
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
