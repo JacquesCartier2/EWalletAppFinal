@@ -19,7 +19,7 @@ public class EWalletApp extends JFrame{
 	private JPanel contentPane;
 	
 	private ArrayList<User> AllUsers = new ArrayList<User>();
-	private User CurrentUser;
+	private String CurrentUser = "";
 	
 	private JTextField txtUserName;
 	private JTextField txtPassword;
