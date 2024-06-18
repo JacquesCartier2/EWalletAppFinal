@@ -1,8 +1,9 @@
 import java.util.ArrayList;
 
 public class ExpenseCalulator implements Expenser {
-	
 
+	ArrayList<User> Users = new ArrayList<>();
+	
 	@Override
 	public void addExpense(Expense Ex) {
 		// TODO Auto-generated method stub
@@ -24,16 +25,16 @@ public class ExpenseCalulator implements Expenser {
 		ArrayList<Expense> expenseTransactions = new ArrayList<>();
 		
 		// Process transactions for all users
-		for(User User : Users){
-			for(Wage wage : User.getWages()){
+		for(User user : Users){
+			for(Wage wage : user.getWages()){
 				totalIncome += wage.getAmount();
 				incomeTransactions.add(wage);
 			} 
-			for(Expense expense : User.getExpenses()){
+			for(Expense expense : user.getExpenses()){
 				double annualExpense = expense.getAmount() * expense.getYearlyFrequency();
 				totalExpense += annualExpense;
 				expenseTransactions.add(expense);
-				}
+			}
 			
 		}
 
