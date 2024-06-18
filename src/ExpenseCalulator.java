@@ -2,8 +2,6 @@ import java.util.ArrayList;
 
 public class ExpenseCalulator implements Expenser {
 	
-	ArrayList<User> Users = new ArrayList<User>();
-	
 
 	@Override
 	public void addExpense(Expense Ex) {
