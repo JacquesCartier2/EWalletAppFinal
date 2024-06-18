@@ -23,15 +23,19 @@ public class EWalletApp extends JFrame {
 
 	private ArrayList<User> AllUsers = new ArrayList<User>();
 	private String CurrentUser = "";
-
-	private JTextField txtUserName;
-	private JTextField txtPassword;
+	
+	private JTextField txtLoginUserName;
+	private JTextField txtLoginPassword;
 	private JTextField txtExpenceSource;
 	private JTextField txtExpenseAmount;
 	private JTextField txtExpenseYearlyFrequency;
 	private JTextField txtIncomeSource;
 	private JTextField txtIncomeAmount;
 	private JTextField txtIncomeMonth;
+	private JTextField txtRegisterUserName;
+	private JTextField txtRegisterPassword;
+	private JTextField txtBalance;
+	private JTextField txtMonthlySavings;
 
 	/**
 	 * Launch the application.
@@ -57,7 +61,7 @@ public class EWalletApp extends JFrame {
 		ExpenseCalulator expenserCalulator = new ExpenseCalulator();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1112, 780);
+		setBounds(100, 100, 1143, 863);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -73,39 +77,58 @@ public class EWalletApp extends JFrame {
 		panel.setBounds(580, 31, 508, 364);
 		contentPane.add(panel);
 		panel.setLayout(null);
-
-		JLabel lblRegister = new JLabel("Register");
-		lblRegister.setBounds(219, 44, 76, 13);
-		panel.add(lblRegister);
-
+		
 		JLabel lblNewLabel_2_1 = new JLabel("User Name");
 		lblNewLabel_2_1.setBounds(137, 81, 76, 13);
 		panel.add(lblNewLabel_2_1);
-
-		txtUserName = new JTextField();
-		txtUserName.setBounds(137, 104, 214, 19);
-		panel.add(txtUserName);
-		txtUserName.setColumns(10);
-
+		
+		txtLoginUserName = new JTextField();
+		txtLoginUserName.setBounds(137, 104, 214, 19);
+		panel.add(txtLoginUserName);
+		txtLoginUserName.setColumns(10);
+		
 		JLabel lblNewLabel_2 = new JLabel("Password");
 		lblNewLabel_2.setBounds(137, 168, 76, 13);
 		panel.add(lblNewLabel_2);
-
-		txtPassword = new JTextField();
-		txtPassword.setBounds(137, 191, 214, 19);
-		panel.add(txtPassword);
-		txtPassword.setColumns(10);
-
+		
+		txtLoginPassword = new JTextField();
+		txtLoginPassword.setBounds(137, 191, 214, 19);
+		panel.add(txtLoginPassword);
+		txtLoginPassword.setColumns(10);
+		
 		JButton btnLogin = new JButton("Login");
+		btnLogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				
+				for (int i = 0; i < AllUsers.size(); i++) {
+					
+					User currentUser = AllUsers.get(i);
+					if (currentUser.username.equals(txtLoginUserName.getText())) {
+						
+						CurrentUser = txtLoginUserName.getText();
+						
+						//Login will display main jPanel in the future
+					}
+					
+					System.out.println("Current user" + CurrentUser);
+				}
+			}
+		});
 		btnLogin.setBounds(199, 249, 96, 28);
 		panel.add(btnLogin);
-
-		JButton btnRegister = new JButton("Resgister");
-		btnRegister.setBounds(199, 293, 96, 28);
-		panel.add(btnRegister);
-
+		
+		JButton btnToRegisterSreen = new JButton("Resgister");
+		btnToRegisterSreen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnToRegisterSreen.setBounds(199, 293, 96, 28);
+		panel.add(btnToRegisterSreen);
+		
 		JLabel lblLogin = new JLabel("Login");
-		lblLogin.setBounds(219, 61, 76, 13);
+		lblLogin.setBounds(219, 44, 76, 13);
 		panel.add(lblLogin);
 
 		JPanel panel_1 = new JPanel();
@@ -202,8 +225,16 @@ public class EWalletApp extends JFrame {
 		JButton btnAddExpense = new JButton("Add");
 		btnAddExpense.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				getUserObject
 				
+				String source = txtExpenceSource.getText();
+				Double amount = Double.parseDouble(txtExpenseAmount.getText());
+				int Yearly = Integer.parseInt(txtExpenseYearlyFrequency.getText());
+				
+				expenserCalulator.addExpense(getUserObject(), source, amount, Yearly);
+				
+				System.out.println(getUserObject().toString());
+				
+				UpdateBalance();
 			}
 		});
 		btnAddExpense.setBounds(71, 289, 85, 21);
@@ -213,32 +244,93 @@ public class EWalletApp extends JFrame {
 		btnIncome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				String source = txtIncomeSource.getText();
+				double amount = Double.parseDouble(txtIncomeAmount.getText());
+				String month = txtIncomeMonth.getText();
 				
+				expenserCalulator.addMonthlyIncome(getUserObject(), source, amount, month);
+				
+				System.out.println(getUserObject().toString());
+				
+				UpdateBalance();
 			}
 		});
 		btnIncome.setBounds(335, 289, 85, 21);
 		panel_1.add(btnIncome);
+		
+		JLabel lblNewLabel_5 = new JLabel("Balance:");
+		lblNewLabel_5.setBounds(63, 83, 45, 13);
+		panel_1.add(lblNewLabel_5);
+		
+		txtBalance = new JTextField();
+		txtBalance.setEditable(false);
+		txtBalance.setBounds(63, 97, 96, 19);
+		panel_1.add(txtBalance);
+		txtBalance.setColumns(10);
+		
+		txtMonthlySavings = new JTextField();
+		txtMonthlySavings.setEditable(false);
+		txtMonthlySavings.setColumns(10);
+		txtMonthlySavings.setBounds(280, 97, 96, 19);
+		panel_1.add(txtMonthlySavings);
+		
+		JLabel lblNewLabel_5_1 = new JLabel("Monthly Savings:");
+		lblNewLabel_5_1.setBounds(280, 83, 96, 13);
+		panel_1.add(lblNewLabel_5_1);
+
 
 		JPanel panel_1_1 = new JPanel();
 		panel_1_1.setBounds(43, 411, 508, 364);
 		contentPane.add(panel_1_1);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setLayout(null);
+		panel_2.setBounds(580, 411, 508, 364);
+		contentPane.add(panel_2);
+		
+		JLabel lblRegister_1 = new JLabel("Register");
+		lblRegister_1.setBounds(219, 44, 76, 13);
+		panel_2.add(lblRegister_1);
+		
+		JLabel lblNewLabel_2_1_1 = new JLabel("User Name");
+		lblNewLabel_2_1_1.setBounds(137, 81, 76, 13);
+		panel_2.add(lblNewLabel_2_1_1);
+		
+		txtRegisterUserName = new JTextField();
+		txtRegisterUserName.setColumns(10);
+		txtRegisterUserName.setBounds(137, 104, 214, 19);
+		panel_2.add(txtRegisterUserName);
+		
+		JLabel lblNewLabel_2_2 = new JLabel("Password");
+		lblNewLabel_2_2.setBounds(137, 168, 76, 13);
+		panel_2.add(lblNewLabel_2_2);
+		
+		txtRegisterPassword = new JTextField();
+		txtRegisterPassword.setColumns(10);
+		txtRegisterPassword.setBounds(137, 191, 214, 19);
+		panel_2.add(txtRegisterPassword);
+		
+		JButton btnRegister = new JButton("Resgister");
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				CreateUser(txtRegisterUserName.getText(), txtRegisterPassword.getText());
+	
 			}
 		});
-		btnLogin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-			}
-		});
-
+		btnRegister.setBounds(199, 243, 96, 28);
+		panel_2.add(btnRegister);
+		
 	}
-
+	
+	
 	public void CreateUser(String username, String password) {
 
 		User user = new User(username, password);
 		AllUsers.add(user);
+		
+		System.out.println("User added:/n Username: " + user.getUserName() + "/n Password: " + user.getPwd());
+		
+		System.out.println(AllUsers.toString());
 	}
 	
 	public User getUserObject() {
@@ -246,10 +338,55 @@ public class EWalletApp extends JFrame {
 		for (int i = 0; i < AllUsers.size(); i++) {
 			
 			User currentUser = AllUsers.get(i);
-			if (currentUser.username == CurrentUser) {
+			if (currentUser.username.equals(CurrentUser)) {
 				
 				return currentUser;
 			}
 		}
 		return null;
 	}
+	
+	public void UpdateUserObject(User object) {
+		
+		for (int i = 0; i < AllUsers.size(); i++) {
+			
+			User currentUser = AllUsers.get(i);
+			if (currentUser.username.equals(CurrentUser)) {
+				
+				AllUsers.set(i, object);
+			}
+		}
+	}
+	
+	public void UpdateBalance() {
+		
+	    double expensesTotal = 0;
+	    double incomeTotal = 0;
+
+	    for (int i = 0; i < AllUsers.size(); i++) {
+	        User currentUser = AllUsers.get(i);
+	        if (currentUser.username.equals(CurrentUser)) {
+	            ArrayList<Expense> listOfExpense = currentUser.getExpenses();
+	            if (listOfExpense != null) {
+	                for (int expenseNum = 0; expenseNum < listOfExpense.size(); expenseNum++) {
+	                    Expense currentExpense = listOfExpense.get(expenseNum);
+	                    expensesTotal += currentExpense.amount;
+	                }
+	            }
+
+	            ArrayList<Wage> listOfIncome = currentUser.getWages();
+	            if (listOfIncome != null) {
+	                for (int incomeNum = 0; incomeNum < listOfIncome.size(); incomeNum++) {
+	                    Wage currentIncome = listOfIncome.get(incomeNum);
+	                    incomeTotal += currentIncome.getAmount();
+	                }
+	            }
+
+	            txtBalance.setText(String.valueOf(incomeTotal - expensesTotal));
+	            break; // Exit the loop once the current user is found
+	        }
+	    }
+	}
+
+	
+}

@@ -34,4 +34,9 @@ public class Wage {
 	public void setMonth(String month) {
 		Month = month;
 	}
+	
+	 @Override
+	    public String toString() {
+	        return "Wage [source=" + source + ", amount=" + amount + ", Month=" + Month + "]";
+	    }
 }

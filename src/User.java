@@ -30,6 +30,16 @@ public class User {
 	public ArrayList<Expense> getExpenses(){
 		return Spending;
 	}
+	
+	
+
+	public String getPwd() {
+		return pwd;
+	}
+
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
 
 	public void addWage(Wage wage){
 		Income.add(wage);
@@ -38,4 +48,23 @@ public class User {
 	public void addExpense(Expense expense){
 		Spending.add(expense);
 	}
+	
+	@Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("User Details:\n");
+        sb.append("Username: ").append(username).append("\n");
+        sb.append("Balance: ").append(balance).append("\n");
+        sb.append("Monthly Savings: ").append(monthlysavings).append("\n");
+        sb.append("Income Sources:\n");
+        for (Wage wage : Income) {
+            sb.append("\t").append(wage.toString()).append("\n");
+        }
+        sb.append("Expenses:\n");
+        for (Expense expense : Spending) {
+            sb.append("\t").append(expense.toString()).append("\n");
+        }
+        return sb.toString();
+    }
+	
 }
