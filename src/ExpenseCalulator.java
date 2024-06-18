@@ -16,49 +16,46 @@ public class ExpenseCalulator implements Expenser {
 	}
 
 	@Override
-	public void PrintFullreport() {
-		// TODO Auto-generated method stub
-		double totalIncome = 0;
-		double totalExpense = 0;
-		ArrayList<Wage> incomeTransactions = new ArrayList<>();
-		ArrayList<Expense> expenseTransactions = new ArrayList<>();
-		
-		// Process transactions for all users
-		for(User User : Users){
-			for(Wage wage : User.getWages()){
-				totalIncome += wage.getAmount();
-				incomeTransactions.add(wage);
-			} 
-			for(Expense expense : User.getExpenses()){
-				double annualExpense = expense.getAmount() * expense.getYearlyFrequency();
-				totalExpense += annualExpense;
-				expenseTransactions.add(expense);
-				}
-			
-		}
+	public void PrintFullreport(User user) {
+	    double totalIncome = 0;
+	    double totalExpense = 0;
+	    ArrayList<Wage> incomeTransactions = new ArrayList<>();
+	    ArrayList<Expense> expenseTransactions = new ArrayList<>();
 
-		// Calculate summary info
-		double netBalalnce = totalIncome - totalExpense;
-		
-		// Print detailed report
-		System.out.println("DETAILED REPORT");
+	    // Process transactions for the given user
+	    for (Wage wage : user.getWages()) {
+	        totalIncome += wage.getAmount();
+	        incomeTransactions.add(wage);
+	    }
+	    for (Expense expense : user.getExpenses()) {
+	        double annualExpense = expense.getAmount() * expense.getYearlyfrequency();
+	        totalExpense += annualExpense;
+	        expenseTransactions.add(expense);
+	    }
 
-		System.out.println("\nIncome:");
-		for(Wage income : incomeTransactions){
-			System.out.println("- " + income.getSource() + ": $" + income.getAmount() + "(" + income.getMonth() + ")");
-		}
+	    // Calculate summary info
+	    double netBalance = totalIncome - totalExpense;
 
-		System.out.println("\nExpenses:");
-		for(Expense expense : expenseTransactions){
-			System.out.println("- " + expense.getSource() + ": $" + expense.getAmount() + "(Frequency: " + expense.getYearlyFrequency() + ")");
-		}
+	    // Print detailed report
+	    System.out.println("DETAILED REPORT");
 
-		// Print summary info
-		System.out.println("\nSUMMARY");
-		System.out.println("Total Income: $" + totalIncome);
-		System.out.println("Total Expenses: $" + totalExpense);
-		System.out.println("Net Balance: $" + netBalalnce);
+	    System.out.println("\nIncome:");
+	    for (Wage income : incomeTransactions) {
+	        System.out.println("- " + income.getSource() + ": $" + income.getAmount() + " (" + income.getMonth() + ")");
+	    }
+
+	    System.out.println("\nExpenses:");
+	    for (Expense expense : expenseTransactions) {
+	        System.out.println("- " + expense.getSource() + ": $" + expense.getAmount() + " (Frequency: " + expense.getYearlyfrequency() + ")");
+	    }
+
+	    // Print summary info
+	    System.out.println("\nSUMMARY");
+	    System.out.println("Total Income: $" + totalIncome);
+	    System.out.println("Total Expenses: $" + totalExpense);
+	    System.out.println("Net Balance: $" + netBalance);
 	}
+
 
 	@Override
 	public void PrintExpensereport() {

@@ -9,7 +9,7 @@ public User userAtHand= null;
 	//As  a user I would like to view a detailed report of all expenses, income, and summary information 
 	//summary information include : total income, total income for each type, total income for each month, total expense, total expense for each type, 
 	//total savings (total income- total expenses) to date, if the total savings are less than zero it should be reported as total new debt. 	
-	public void PrintFullreport();
+	public void PrintFullreport(User user);
 	//As  a user I would like to view a detailed report of all expenses, and summary information for expenses 
 	public void PrintExpensereport();
 	//As  a user I would like to view a detailed report of all income, and summary information for income
