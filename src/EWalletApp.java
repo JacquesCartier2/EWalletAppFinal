@@ -190,10 +190,22 @@ public class EWalletApp extends JFrame{
 		panel_1.add(txtIncomeMonth);
 		
 		JButton btnAddExpense = new JButton("Add");
+		btnAddExpense.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				getUserObject
+				
+			}
+		});
 		btnAddExpense.setBounds(71, 289, 85, 21);
 		panel_1.add(btnAddExpense);
 		
 		JButton btnIncome = new JButton("Add");
+		btnIncome.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+			}
+		});
 		btnIncome.setBounds(335, 289, 85, 21);
 		panel_1.add(btnIncome);
 		
@@ -224,12 +236,12 @@ public class EWalletApp extends JFrame{
 		AllUsers.add(user);
 	}
 	
-	public User getUserObject(String username) {
+	public User getUserObject() {
 		
 		for (int i = 0; i < AllUsers.size(); i++) {
 			
 			User currentUser = AllUsers.get(i);
-			if (currentUser.username == username) {
+			if (currentUser.username == CurrentUser) {
 				
 				return currentUser;
 			}
