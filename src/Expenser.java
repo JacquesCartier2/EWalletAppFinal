@@ -18,7 +18,7 @@ public interface Expenser {
 	// income for each month, total expense, total expense for each type,
 	// total savings (total income- total expenses) to date, if the total savings
 	// are less than zero it should be reported as total new debt.
-	public void PrintFullreport();
+	public void PrintFullreport(User user);
 
 	// As a user I would like to view a detailed report of all expenses, and summary
 	// information for expenses
@@ -43,7 +43,7 @@ public interface Expenser {
 	// As a user I would like to view my current balance in a different currency
 	// Bonus : try to use the same convert function to convert from foreign currency
 	// to USD
-	public Currency convertForeignCurrency(Currency C, double amount);
+	public double convertForeignCurrency(Currency C, double amount);
 
 	// As a user I would like to load multiple expenses from an external file all at
 	// once returning true if loaded successfully and false otherwise
