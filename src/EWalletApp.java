@@ -19,6 +19,8 @@ public class EWalletApp extends JFrame{
 	private JPanel contentPane;
 	
 	private ArrayList<User> AllUsers = new ArrayList<User>();
+	private User CurrentUser;
+	
 	private JTextField txtUserName;
 	private JTextField txtPassword;
 	private JTextField txtExpenceSource;
@@ -48,6 +50,10 @@ public class EWalletApp extends JFrame{
 	 * Create the frame.
 	 */
 	public EWalletApp() {
+		
+		ExpenseCalulator expenserCalulator = new ExpenseCalulator();
+		
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1112, 780);
 		contentPane = new JPanel();
