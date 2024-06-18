@@ -43,7 +43,7 @@ public interface Expenser {
 	// As a user I would like to view my current balance in a different currency
 	// Bonus : try to use the same convert function to convert from foreign currency
 	// to USD
-	public Currency convertForeignCurrency(Currency C, double amount);
+	public double convertForeignCurrency(Currency C, double amount);
 
 	// As a user I would like to load multiple expenses from an external file all at
 	// once returning true if loaded successfully and false otherwise
