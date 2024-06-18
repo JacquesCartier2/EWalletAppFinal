@@ -223,4 +223,17 @@ public class EWalletApp extends JFrame{
 		User user = new User(username, password);
 		AllUsers.add(user);
 	}
+	
+	public User getUserObject(String username) {
+		
+		for (int i = 0; i < AllUsers.size(); i++) {
+			
+			User currentUser = AllUsers.get(i);
+			if (currentUser.username == username) {
+				
+				return currentUser;
+			}
+		}
+		return null;
+	}
 }
