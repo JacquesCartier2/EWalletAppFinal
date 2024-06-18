@@ -12,6 +12,10 @@ public class User {
 	// possible monthly savings, calculated using monthly income (most recent) assuming the data we have is for one year, and monthly and biweekly expenses, here you can assume yearly expenses that are recorded have already been paid. 
 	double monthlysavings;	
 	//should add constructor(s)
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9ce906e195c8446cb0cf76266775f11eb1d6d836
 	public User(String username,String password){
 		this.username = username;
 		this.pwd = password;
