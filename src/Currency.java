@@ -2,7 +2,7 @@
 public class Currency {
 	public double rate;
 	public String name;
-	
+
 	public Currency(double rate, String name) {
 		super();
 		this.rate = rate;
@@ -24,5 +24,5 @@ public class Currency {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 }
