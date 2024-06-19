@@ -139,7 +139,7 @@ public class EWalletApp extends JFrame {
 		JButton btnFinacialReport = new JButton("My Financial Report");
 		btnFinacialReport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				User user = getUserObject(CurrentUser);
+				User user = getUserObject();
 				if(user != null){
 					expenserCalulator.PrintFullreport(user);
 
