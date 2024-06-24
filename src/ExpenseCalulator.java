@@ -1,6 +1,7 @@
 import java.util.ArrayList;
-
 import javax.swing.JOptionPane;
+
+import java.time.LocalDate;
 
 public class ExpenseCalulator implements Expenser {
 	
@@ -141,10 +142,37 @@ public class ExpenseCalulator implements Expenser {
 		return 0;
 	}
 
-	@Override
-	public void updateMonthlySavings() {
-		// TODO Auto-generated method stub
+	public double updateMonthlySavings(User user) {
+		
+		double monthlyExpenses = 0;
+		double monthlyIncome = 0;
+		
+		ArrayList<Expense> listOfExpense = user.getExpenses();
+        if (listOfExpense != null) {
+            for (int expenseNum = 0; expenseNum < listOfExpense.size(); expenseNum++) {
+                Expense currentExpense = listOfExpense.get(expenseNum);
+                monthlyExpenses += (currentExpense.amount * currentExpense.yearlyfrequency) / 12;
+            }
+        }
 
+        ArrayList<Wage> listOfIncome = user.getWages();
+        if (listOfIncome != null) {
+            for (int incomeNum = 0; incomeNum < listOfIncome.size(); incomeNum++) {
+                Wage currentIncome = listOfIncome.get(incomeNum);
+                
+                LocalDate currentDate = LocalDate.now();
+                String currentMonth = currentDate.getMonth().toString();
+                
+                System.out.println(currentMonth);
+                
+                if (currentMonth.equals(currentIncome.Month)) {
+                	
+                	monthlyIncome += currentIncome.getAmount();
+                }  
+            }
+        }
+		
+		return monthlyIncome - monthlyExpenses;
 	}
 
 }
