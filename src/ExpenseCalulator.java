@@ -6,18 +6,18 @@ import javax.swing.JOptionPane;
 import java.time.LocalDate;
 
 public class ExpenseCalulator implements Expenser {
-	
+
 	@Override
 	public void addExpense(User user, String source, double amount, int yearlyfrequency) {
 		Expense expense = new Expense(source, amount, yearlyfrequency);
-		
+
 		user.addExpense(expense);
 	}
 
 	@Override
 	public void addMonthlyIncome(User user, String source, double amount, String month) {
 		Wage income = new Wage(source, amount, month);
-		
+
 		user.addWage(income);
 	}
 
@@ -42,25 +42,27 @@ public class ExpenseCalulator implements Expenser {
 		// Calculate summary info
 		double netBalance = totalIncome - totalExpense;
 
-	    // Print detailed report
+		// Print detailed report
 		StringBuilder report = new StringBuilder();
-	    report.append("DETAILED REPORT\n");
+		report.append("DETAILED REPORT\n");
 
-	    report.append("\nIncome:\n");
-	    for (Wage income : incomeTransactions) {
-	        report.append("- " + income.getSource() + ": $" + income.getAmount() + " (" + income.getMonth() + ")\n");
-	    }
+		report.append("\nIncome:\n");
+		for (Wage income : incomeTransactions) {
+			report.append("- " + income.getSource() + ": $" + income.getAmount() + " (" + income.getMonth()
+					+ ")\n");
+		}
 
-	    report.append("\nExpenses:\n");
-	    for (Expense expense : expenseTransactions) {
-	        report.append("- " + expense.getSource() + ": $" + expense.getAmount() + " (Frequency: " + expense.getYearlyfrequency() + ")\n");
-	    }
+		report.append("\nExpenses:\n");
+		for (Expense expense : expenseTransactions) {
+			report.append("- " + expense.getSource() + ": $" + expense.getAmount() + " (Frequency: "
+					+ expense.getYearlyfrequency() + ")\n");
+		}
 
-	    // Print summary info
-	    report.append("\nSUMMARY\n");
-	    report.append("Total Income: $" + totalIncome + "\n");
-	    report.append("Total Expenses: $" + totalExpense + "\n");
-	    report.append("Net Balance: $" + netBalance + "\n");
+		// Print summary info
+		report.append("\nSUMMARY\n");
+		report.append("Total Income: $" + totalIncome + "\n");
+		report.append("Total Expenses: $" + totalExpense + "\n");
+		report.append("Net Balance: $" + netBalance + "\n");
 
 		JOptionPane.showMessageDialog(null, report.toString());
 	}
@@ -110,34 +112,23 @@ public class ExpenseCalulator implements Expenser {
 	}
 
 	@Override
-	public double convertForeignCurrency(Currency C, double amount) {
+	public Currency convertForeignCurrency(Currency C, String name) {
 
 		// Convert to Canadian Dollar CAD
 		final double CADRATE = 1.37;
-		final double USDRATE = 0.73;
-		double outAmount = 0;
+		final double USDRATE = .73;
 
-		// to Canadian Dollar
-		if (C.getName().equals("USD")) {
+		if (name.equals("USD")) {
 			C.setRate(CADRATE);
-			C.setName("CAD");
-
-			outAmount = CADRATE * amount;
-			return outAmount;
-
 		}
-		// to US Dollar
-		if (C.getName().equals("CAD")) {
+
+		if (name.equals("CAD")) {
 			C.setRate(USDRATE);
-			C.setName("USD");
-
-			outAmount = USDRATE * amount;
-
 		}
 		// need to use printf to limit decmail places
-		return outAmount;
 
-		// TODO Auto-generated method stub
+		return C;
+
 	}
 
 	@Override

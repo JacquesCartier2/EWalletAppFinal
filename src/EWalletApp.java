@@ -1,15 +1,15 @@
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JButton;
 import javax.swing.JTextField;
-import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.awt.event.ActionEvent;
 import javax.swing.JDesktopPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -21,6 +21,7 @@ public class EWalletApp extends JFrame {
     private JPanel contentPane;
 
     private ArrayList<User> AllUsers = new ArrayList<User>();
+    Currency C = new Currency(1.00, "USD");
     private String CurrentUser = "";
 
     private JTextField txtLoginUserName;
@@ -82,7 +83,6 @@ public class EWalletApp extends JFrame {
         loginPanel.setBounds(43, 31, 527, 406);
         contentPane.add(loginPanel);
         loginPanel.setLayout(null);
-
         JLabel lblLoginUserName = new JLabel("User Name");
         lblLoginUserName.setBounds(137, 81, 76, 13);
         loginPanel.add(lblLoginUserName);
@@ -330,7 +330,8 @@ public class EWalletApp extends JFrame {
             }
           }
         });
-        btnExportCSV.setBounds(25, 42, 149, 31);
+        
+        btnExportCSV.setBounds(280, 10, 149, 31);
         mainMenuPanel.add(btnExportCSV);
 
         JButton btnLogout = new JButton("Logout");
@@ -342,6 +343,35 @@ public class EWalletApp extends JFrame {
         });
         btnLogout.setBounds(199, 332, 96, 28);
         mainMenuPanel.add(btnLogout);
+        
+        
+        String currencyList[] = { "USD", "CAD" };
+		JList<String> LstCurrency = new JList<String>(currencyList);
+		LstCurrency.setBounds(63, 37, 149, 36);
+		LstCurrency.setSelectedIndex(0);
+		mainMenuPanel.add(LstCurrency);
+
+		LstCurrency.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					double inAmount = Double.parseDouble(txtBalance.getText());
+					int outAmount;
+					String name = LstCurrency.getSelectedValue();
+
+					expenserCalulator.convertForeignCurrency(C, name);
+
+					outAmount = (int) (inAmount * C.getRate());
+
+					txtBalance.setText(String.valueOf(outAmount));
+
+				}
+			}
+		});
+
+		JLabel lblNewLabel_1 = new JLabel("Currency in use:");
+		lblNewLabel_1.setBounds(63, 14, 108, 13);
+		mainMenuPanel.add(lblNewLabel_1);
     }
 
     private void showLoginPanel() {
@@ -369,65 +399,53 @@ public class EWalletApp extends JFrame {
 
 		User user = new User(username, password);
 		AllUsers.add(user);
-		
+
 		System.out.println("User added:/n Username: " + user.getUserName() + "/n Password: " + user.getPwd());
-		
+
 		System.out.println(AllUsers.toString());
 	}
-	
+
 	public User getUserObject() {
-		
+
 		for (int i = 0; i < AllUsers.size(); i++) {
-			
+
 			User currentUser = AllUsers.get(i);
 			if (currentUser.username.equals(CurrentUser)) {
-				
+
 				return currentUser;
 			}
 		}
 		return null;
 	}
-	
-//	public void UpdateUserObject(User object) {
-//		
-//		for (int i = 0; i < AllUsers.size(); i++) {
-//			
-//			User currentUser = AllUsers.get(i);
-//			if (currentUser.username.equals(CurrentUser)) {
-//				
-//				AllUsers.set(i, object);
-//			}
-//		}
-//	}
-	
+
 	public void UpdateBalance() {
-		
-	    double expensesTotal = 0;
-	    double incomeTotal = 0;
 
-	    for (int i = 0; i < AllUsers.size(); i++) {
-	        User currentUser = AllUsers.get(i);
-	        if (currentUser.username.equals(CurrentUser)) {
-	            ArrayList<Expense> listOfExpense = currentUser.getExpenses();
-	            if (listOfExpense != null) {
-	                for (int expenseNum = 0; expenseNum < listOfExpense.size(); expenseNum++) {
-	                    Expense currentExpense = listOfExpense.get(expenseNum);
-	                    expensesTotal += currentExpense.amount;
-	                }
-	            }
+		double expensesTotal = 0;
+		double incomeTotal = 0;
 
-	            ArrayList<Wage> listOfIncome = currentUser.getWages();
-	            if (listOfIncome != null) {
-	                for (int incomeNum = 0; incomeNum < listOfIncome.size(); incomeNum++) {
-	                    Wage currentIncome = listOfIncome.get(incomeNum);
-	                    incomeTotal += currentIncome.getAmount();
-	                }
-	            }
+		for (int i = 0; i < AllUsers.size(); i++) {
+			User currentUser = AllUsers.get(i);
+			if (currentUser.username.equals(CurrentUser)) {
+				ArrayList<Expense> listOfExpense = currentUser.getExpenses();
+				if (listOfExpense != null) {
+					for (int expenseNum = 0; expenseNum < listOfExpense.size(); expenseNum++) {
+						Expense currentExpense = listOfExpense.get(expenseNum);
+						expensesTotal += currentExpense.amount;
+					}
+				}
 
-	            txtBalance.setText(String.valueOf(incomeTotal - expensesTotal));
-	            break; // Exit the loop once the current user is found
-	        }
-	    }
+				ArrayList<Wage> listOfIncome = currentUser.getWages();
+				if (listOfIncome != null) {
+					for (int incomeNum = 0; incomeNum < listOfIncome.size(); incomeNum++) {
+						Wage currentIncome = listOfIncome.get(incomeNum);
+						incomeTotal += currentIncome.getAmount();
+					}
+				}
+
+				txtBalance.setText(String.valueOf(incomeTotal - expensesTotal));
+				break; // Exit the loop once the current user is found
+			}
+		}
 	}
 	
 	public void UpdateSavings() {
@@ -442,5 +460,4 @@ public class EWalletApp extends JFrame {
 	    }
 	}
 
-	
 }
