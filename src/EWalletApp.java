@@ -330,8 +330,8 @@ public class EWalletApp extends JFrame {
             }
           }
         });
-        btnExportCSV.setBounds(210, 331, 149, 31);
-        panel_1.add(btnExportCSV);
+        btnExportCSV.setBounds(25, 42, 149, 31);
+        mainMenuPanel.add(btnExportCSV);
 
         JButton btnLogout = new JButton("Logout");
         btnLogout.addActionListener(new ActionListener() {
