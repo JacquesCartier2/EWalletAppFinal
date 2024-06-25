@@ -62,7 +62,7 @@ public class EWalletApp extends JFrame {
      */
     public EWalletApp() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1143, 863);
+        setBounds(100, 100, 635, 527);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -78,7 +78,7 @@ public class EWalletApp extends JFrame {
 
     private void initializeLoginPanel() {
         loginPanel = new JPanel();
-        loginPanel.setBounds(580, 31, 508, 364);
+        loginPanel.setBounds(43, 31, 527, 406);
         contentPane.add(loginPanel);
         loginPanel.setLayout(null);
 
@@ -137,7 +137,7 @@ public class EWalletApp extends JFrame {
 
     private void initializeRegisterPanel() {
         registerPanel = new JPanel();
-        registerPanel.setBounds(580, 411, 508, 364);
+        registerPanel.setBounds(43, 31, 527, 406);
         contentPane.add(registerPanel);
         registerPanel.setLayout(null);
 
@@ -177,7 +177,7 @@ public class EWalletApp extends JFrame {
 
     private void initializeMainMenuPanel() {
         mainMenuPanel = new JPanel();
-        mainMenuPanel.setBounds(43, 31, 1045, 748);
+        mainMenuPanel.setBounds(43, 31, 527, 406);
         contentPane.add(mainMenuPanel);
         mainMenuPanel.setLayout(null);
 
