@@ -1,17 +1,18 @@
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JDesktopPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class EWalletApp extends JFrame {
 	// this is the app class, has the GUI and create one object of your expense
@@ -22,6 +23,7 @@ public class EWalletApp extends JFrame {
 	private JPanel contentPane;
 
 	private ArrayList<User> AllUsers = new ArrayList<User>();
+	Currency C = new Currency(1.00, "USD");
 	private String CurrentUser = "";
 
 	private JTextField txtLoginUserName;
@@ -150,9 +152,30 @@ public class EWalletApp extends JFrame {
 		btnFinacialReport.setBounds(280, 42, 149, 31);
 		panel_1.add(btnFinacialReport);
 
-		JList LstCurrency = new JList();
+		// here
+		String currencyList[] = { "USD", "CAD" };
+		JList<String> LstCurrency = new JList(currencyList);
 		LstCurrency.setBounds(63, 37, 149, 36);
+		LstCurrency.setSelectedIndex(0);
 		panel_1.add(LstCurrency);
+
+		LstCurrency.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					double inAmount = Double.parseDouble(txtBalance.getText());
+					int outAmount;
+					String name = LstCurrency.getSelectedValue();
+
+					expenserCalulator.convertForeignCurrency(C, name);
+
+					outAmount = (int) (inAmount * C.getRate());
+
+					txtBalance.setText(String.valueOf(outAmount));
+
+				}
+			}
+		});
 
 		JLabel lblNewLabel_1 = new JLabel("Currency in use:");
 		lblNewLabel_1.setBounds(63, 14, 108, 13);
