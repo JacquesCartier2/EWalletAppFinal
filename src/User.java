@@ -34,7 +34,7 @@ public class User {
 	
 
 	public String getPwd() {
-		return pwd;
+		return this.pwd;
 	}
 
 	public void setPwd(String pwd) {
