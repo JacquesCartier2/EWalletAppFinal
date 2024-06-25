@@ -13,334 +13,356 @@ import java.awt.event.ActionEvent;
 import javax.swing.JDesktopPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class EWalletApp extends JFrame {
-	// this is the app class, has the GUI and create one object of your expense
-	// calculator class. The expense calculator class is the implementation of the
-	// Expenser interface
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
 
-	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+    private ArrayList<User> AllUsers = new ArrayList<User>();
+    private String CurrentUser = "";
 
-	private ArrayList<User> AllUsers = new ArrayList<User>();
-	private String CurrentUser = "";
-	
-	private JTextField txtLoginUserName;
-	private JTextField txtLoginPassword;
-	private JTextField txtExpenceSource;
-	private JTextField txtExpenseAmount;
-	private JTextField txtExpenseYearlyFrequency;
-	private JTextField txtIncomeSource;
-	private JTextField txtIncomeAmount;
-	private JTextField txtIncomeMonth;
-	private JTextField txtRegisterUserName;
-	private JTextField txtRegisterPassword;
-	private JTextField txtBalance;
-	private JTextField txtMonthlySavings;
+    private JTextField txtLoginUserName;
+    private JTextField txtLoginPassword;
+    private JTextField txtExpenceSource;
+    private JTextField txtExpenseAmount;
+    private JTextField txtExpenseYearlyFrequency;
+    private JTextField txtIncomeSource;
+    private JTextField txtIncomeAmount;
+    private JTextField txtIncomeMonth;
+    private JTextField txtRegisterUserName;
+    private JTextField txtRegisterPassword;
+    private JTextField txtBalance;
+    private JTextField txtMonthlySavings;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					EWalletApp frame = new EWalletApp();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+    ExpenseCalulator expenserCalulator = new ExpenseCalulator();
 
-	/**
-	 * Create the frame.
-	 */
-	public EWalletApp() {
+    private JPanel loginPanel;
+    private JPanel registerPanel;
+    private JPanel mainMenuPanel;
 
-		ExpenseCalulator expenserCalulator = new ExpenseCalulator();
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    EWalletApp frame = new EWalletApp();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1143, 863);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+    /**
+     * Create the frame.
+     */
+    public EWalletApp() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 635, 527);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
 
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+        initializeLoginPanel();
+        initializeRegisterPanel();
+        initializeMainMenuPanel();
 
-		JLabel lblNewLabel = new JLabel("Welcome User");
-		lblNewLabel.setVisible(false);
-		lblNewLabel.setBounds(23, 10, 138, 37);
-		contentPane.add(lblNewLabel);
+        // Initially show the login panel
+        showLoginPanel();
+    }
 
-		JPanel panel = new JPanel();
-		panel.setBounds(580, 31, 508, 364);
-		contentPane.add(panel);
-		panel.setLayout(null);
-		
-		JLabel lblNewLabel_2_1 = new JLabel("User Name");
-		lblNewLabel_2_1.setBounds(137, 81, 76, 13);
-		panel.add(lblNewLabel_2_1);
-		
-		txtLoginUserName = new JTextField();
-		txtLoginUserName.setBounds(137, 104, 214, 19);
-		panel.add(txtLoginUserName);
-		txtLoginUserName.setColumns(10);
-		
-		JLabel lblNewLabel_2 = new JLabel("Password");
-		lblNewLabel_2.setBounds(137, 168, 76, 13);
-		panel.add(lblNewLabel_2);
-		
-		txtLoginPassword = new JTextField();
-		txtLoginPassword.setBounds(137, 191, 214, 19);
-		panel.add(txtLoginPassword);
-		txtLoginPassword.setColumns(10);
-		
-		JButton btnLogin = new JButton("Login");
-		btnLogin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				
-				
-				for (int i = 0; i < AllUsers.size(); i++) {
-					
-					User currentUser = AllUsers.get(i);
-					if (currentUser.username.equals(txtLoginUserName.getText())) {
-						
-						CurrentUser = txtLoginUserName.getText();
-						
-						//Login will display main jPanel in the future
-					}
-					
-					System.out.println("Current user" + CurrentUser);
-				}
-			}
-		});
-		btnLogin.setBounds(199, 249, 96, 28);
-		panel.add(btnLogin);
-		
-		JButton btnToRegisterSreen = new JButton("Resgister");
-		btnToRegisterSreen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnToRegisterSreen.setBounds(199, 293, 96, 28);
-		panel.add(btnToRegisterSreen);
-		
-		JLabel lblLogin = new JLabel("Login");
-		lblLogin.setBounds(219, 44, 76, 13);
-		panel.add(lblLogin);
+    private void initializeLoginPanel() {
+        loginPanel = new JPanel();
+        loginPanel.setBounds(43, 31, 527, 406);
+        contentPane.add(loginPanel);
+        loginPanel.setLayout(null);
 
-		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(43, 31, 508, 364);
-		contentPane.add(panel_1);
-		panel_1.setLayout(null);
+        JLabel lblLoginUserName = new JLabel("User Name");
+        lblLoginUserName.setBounds(137, 81, 76, 13);
+        loginPanel.add(lblLoginUserName);
 
-		JButton btnFinacialReport = new JButton("My Financial Report");
-		btnFinacialReport.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				User user = getUserObject();
-				if(user != null){
-					expenserCalulator.PrintFullreport(user);
+        txtLoginUserName = new JTextField();
+        txtLoginUserName.setBounds(137, 104, 214, 19);
+        loginPanel.add(txtLoginUserName);
+        txtLoginUserName.setColumns(10);
 
-				} else {
-					JOptionPane.showMessageDialog(null, "User Not Found!");
+        JLabel lblLoginPassword = new JLabel("Password");
+        lblLoginPassword.setBounds(137, 168, 76, 13);
+        loginPanel.add(lblLoginPassword);
 
-				}
-			}
-		});
-		btnFinacialReport.setBounds(280, 42, 149, 31);
-		panel_1.add(btnFinacialReport);
+        txtLoginPassword = new JTextField();
+        txtLoginPassword.setBounds(137, 191, 214, 19);
+        loginPanel.add(txtLoginPassword);
+        txtLoginPassword.setColumns(10);
 
-		JButton btnExportCSV = new JButton("Export CSV");
-		btnExportCSV.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				User user = getUserObject();
-				if (user != null) {
-					try {
-						expenserCalulator.exportReportToCSV(user);
-						JOptionPane.showMessageDialog(null, "Report exported as CSV!");
-					} catch (IOException ex) {
-						JOptionPane.showMessageDialog(null, "Error exporting report: " + ex.getMessage());
-					}
-				} else {
-					JOptionPane.showMessageDialog(null, "User not found!");
-				}
-			}
-		});
-		btnExportCSV.setBounds(210, 331, 149, 31);
-		panel_1.add(btnExportCSV);
+        JButton btnLogin = new JButton("Login");
+        btnLogin.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+                for (int i = 0; i < AllUsers.size(); i++) {
+                	
+                    User currentUser = AllUsers.get(i);
+                    
+                    if (currentUser.username.equals(txtLoginUserName.getText())) {
+                        CurrentUser = txtLoginUserName.getText();
+                        showMainMenuPanel();
+                        break;
+                    }
+                }
+            }
+        });
+        btnLogin.setBounds(199, 249, 96, 28);
+        loginPanel.add(btnLogin);
 
-		JList LstCurrency = new JList();
-		LstCurrency.setBounds(63, 37, 149, 36);
-		panel_1.add(LstCurrency);
+        JButton btnToRegisterScreen = new JButton("Register");
+        btnToRegisterScreen.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+                showRegisterPanel();
+                
+            }
+        });
+        btnToRegisterScreen.setBounds(199, 293, 96, 28);
+        loginPanel.add(btnToRegisterScreen);
 
-		JLabel lblNewLabel_1 = new JLabel("Currency in use:");
-		lblNewLabel_1.setBounds(63, 14, 108, 13);
-		panel_1.add(lblNewLabel_1);
+        JLabel lblLogin = new JLabel("Login");
+        lblLogin.setBounds(219, 44, 76, 13);
+        loginPanel.add(lblLogin);
+    }
 
-		JLabel lblNewLabel_3 = new JLabel("Add Expense:");
-		lblNewLabel_3.setBounds(78, 145, 108, 13);
-		panel_1.add(lblNewLabel_3);
+    private void initializeRegisterPanel() {
+        registerPanel = new JPanel();
+        registerPanel.setBounds(43, 31, 527, 406);
+        contentPane.add(registerPanel);
+        registerPanel.setLayout(null);
 
-		JLabel lblNewLabel_3_1 = new JLabel("Add Income:");
-		lblNewLabel_3_1.setBounds(335, 145, 108, 13);
-		panel_1.add(lblNewLabel_3_1);
+        JLabel lblRegister = new JLabel("Register");
+        lblRegister.setBounds(219, 44, 76, 13);
+        registerPanel.add(lblRegister);
 
-		JLabel lblNewLabel_4 = new JLabel("Source:");
-		lblNewLabel_4.setBounds(22, 168, 84, 13);
-		panel_1.add(lblNewLabel_4);
+        JLabel lblRegisterUserName = new JLabel("User Name");
+        lblRegisterUserName.setBounds(137, 81, 76, 13);
+        registerPanel.add(lblRegisterUserName);
 
-		txtExpenceSource = new JTextField();
-		txtExpenceSource.setBounds(116, 165, 96, 19);
-		panel_1.add(txtExpenceSource);
-		txtExpenceSource.setColumns(10);
+        txtRegisterUserName = new JTextField();
+        txtRegisterUserName.setBounds(137, 104, 214, 19);
+        registerPanel.add(txtRegisterUserName);
+        txtRegisterUserName.setColumns(10);
 
-		JLabel lblNewLabel_4_1 = new JLabel("Amount:         $");
-		lblNewLabel_4_1.setBounds(22, 221, 96, 13);
-		panel_1.add(lblNewLabel_4_1);
+        JLabel lblRegisterPassword = new JLabel("Password");
+        lblRegisterPassword.setBounds(137, 168, 76, 13);
+        registerPanel.add(lblRegisterPassword);
 
-		txtExpenseAmount = new JTextField();
-		txtExpenseAmount.setColumns(10);
-		txtExpenseAmount.setBounds(116, 218, 96, 19);
-		panel_1.add(txtExpenseAmount);
+        txtRegisterPassword = new JTextField();
+        txtRegisterPassword.setBounds(137, 191, 214, 19);
+        registerPanel.add(txtRegisterPassword);
+        txtRegisterPassword.setColumns(10);
 
-		JLabel lblNewLabel_4_2 = new JLabel("Yearly Frequency:");
-		lblNewLabel_4_2.setBounds(22, 266, 96, 13);
-		panel_1.add(lblNewLabel_4_2);
+        JButton btnRegister = new JButton("Register");
+        btnRegister.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+                CreateUser(txtRegisterUserName.getText(), txtRegisterPassword.getText());
+                showLoginPanel();
+            }
+        });
+        btnRegister.setBounds(199, 243, 96, 28);
+        registerPanel.add(btnRegister);
+    }
 
-		txtExpenseYearlyFrequency = new JTextField();
-		txtExpenseYearlyFrequency.setColumns(10);
-		txtExpenseYearlyFrequency.setBounds(116, 263, 96, 19);
-		panel_1.add(txtExpenseYearlyFrequency);
+    private void initializeMainMenuPanel() {
+        mainMenuPanel = new JPanel();
+        mainMenuPanel.setBounds(43, 31, 527, 406);
+        contentPane.add(mainMenuPanel);
+        mainMenuPanel.setLayout(null);
 
-		JLabel lblNewLabel_4_3 = new JLabel("Source:");
-		lblNewLabel_4_3.setBounds(280, 168, 84, 13);
-		panel_1.add(lblNewLabel_4_3);
+        JLabel lblBalance = new JLabel("Balance:");
+        lblBalance.setBounds(63, 83, 45, 13);
+        mainMenuPanel.add(lblBalance);
 
-		txtIncomeSource = new JTextField();
-		txtIncomeSource.setColumns(10);
-		txtIncomeSource.setBounds(374, 165, 96, 19);
-		panel_1.add(txtIncomeSource);
+        txtBalance = new JTextField();
+        txtBalance.setEditable(false);
+        txtBalance.setBounds(63, 97, 96, 19);
+        mainMenuPanel.add(txtBalance);
+        txtBalance.setColumns(10);
 
-		txtIncomeAmount = new JTextField();
-		txtIncomeAmount.setColumns(10);
-		txtIncomeAmount.setBounds(374, 218, 96, 19);
-		panel_1.add(txtIncomeAmount);
+        JLabel lblMonthlySavings = new JLabel("Monthly Savings:");
+        lblMonthlySavings.setBounds(280, 83, 96, 13);
+        mainMenuPanel.add(lblMonthlySavings);
 
-		JLabel lblNewLabel_4_1_1 = new JLabel("Amount:         $");
-		lblNewLabel_4_1_1.setBounds(280, 221, 96, 13);
-		panel_1.add(lblNewLabel_4_1_1);
+        txtMonthlySavings = new JTextField();
+        txtMonthlySavings.setEditable(false);
+        txtMonthlySavings.setBounds(280, 97, 96, 19);
+        mainMenuPanel.add(txtMonthlySavings);
+        txtMonthlySavings.setColumns(10);
 
-		JLabel lblNewLabel_4_2_1 = new JLabel("Month:");
-		lblNewLabel_4_2_1.setBounds(280, 266, 96, 13);
-		panel_1.add(lblNewLabel_4_2_1);
+        JLabel lblAddExpense = new JLabel("Add Expense:");
+        lblAddExpense.setBounds(78, 145, 108, 13);
+        mainMenuPanel.add(lblAddExpense);
 
-		txtIncomeMonth = new JTextField();
-		txtIncomeMonth.setColumns(10);
-		txtIncomeMonth.setBounds(374, 263, 96, 19);
-		panel_1.add(txtIncomeMonth);
+        JLabel lblExpenseSource = new JLabel("Source:");
+        lblExpenseSource.setBounds(22, 168, 84, 13);
+        mainMenuPanel.add(lblExpenseSource);
 
-		JButton btnAddExpense = new JButton("Add");
-		btnAddExpense.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				String source = txtExpenceSource.getText();
-				Double amount = Double.parseDouble(txtExpenseAmount.getText());
-				int Yearly = Integer.parseInt(txtExpenseYearlyFrequency.getText());
-				
-				expenserCalulator.addExpense(getUserObject(), source, amount, Yearly);
-				
-				System.out.println(getUserObject().toString());
-				
-				UpdateBalance();
-			}
-		});
-		btnAddExpense.setBounds(71, 289, 85, 21);
-		panel_1.add(btnAddExpense);
+        txtExpenceSource = new JTextField();
+        txtExpenceSource.setBounds(116, 165, 96, 19);
+        mainMenuPanel.add(txtExpenceSource);
+        txtExpenceSource.setColumns(10);
 
-		JButton btnIncome = new JButton("Add");
-		btnIncome.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				String source = txtIncomeSource.getText();
-				double amount = Double.parseDouble(txtIncomeAmount.getText());
-				String month = txtIncomeMonth.getText();
-				
-				expenserCalulator.addMonthlyIncome(getUserObject(), source, amount, month);
-				
-				System.out.println(getUserObject().toString());
-				
-				UpdateBalance();
-			}
-		});
-		btnIncome.setBounds(335, 289, 85, 21);
-		panel_1.add(btnIncome);
-		
-		JLabel lblNewLabel_5 = new JLabel("Balance:");
-		lblNewLabel_5.setBounds(63, 83, 45, 13);
-		panel_1.add(lblNewLabel_5);
-		
-		txtBalance = new JTextField();
-		txtBalance.setEditable(false);
-		txtBalance.setBounds(63, 97, 96, 19);
-		panel_1.add(txtBalance);
-		txtBalance.setColumns(10);
-		
-		txtMonthlySavings = new JTextField();
-		txtMonthlySavings.setEditable(false);
-		txtMonthlySavings.setColumns(10);
-		txtMonthlySavings.setBounds(280, 97, 96, 19);
-		panel_1.add(txtMonthlySavings);
-		
-		JLabel lblNewLabel_5_1 = new JLabel("Monthly Savings:");
-		lblNewLabel_5_1.setBounds(280, 83, 96, 13);
-		panel_1.add(lblNewLabel_5_1);
+        JLabel lblExpenseAmount = new JLabel("Amount:         $");
+        lblExpenseAmount.setBounds(22, 221, 96, 13);
+        mainMenuPanel.add(lblExpenseAmount);
 
+        txtExpenseAmount = new JTextField();
+        txtExpenseAmount.setBounds(116, 218, 96, 19);
+        mainMenuPanel.add(txtExpenseAmount);
+        txtExpenseAmount.setColumns(10);
 
-		JPanel panel_1_1 = new JPanel();
-		panel_1_1.setBounds(43, 411, 508, 364);
-		contentPane.add(panel_1_1);
-		
-		JPanel panel_2 = new JPanel();
-		panel_2.setLayout(null);
-		panel_2.setBounds(580, 411, 508, 364);
-		contentPane.add(panel_2);
-		
-		JLabel lblRegister_1 = new JLabel("Register");
-		lblRegister_1.setBounds(219, 44, 76, 13);
-		panel_2.add(lblRegister_1);
-		
-		JLabel lblNewLabel_2_1_1 = new JLabel("User Name");
-		lblNewLabel_2_1_1.setBounds(137, 81, 76, 13);
-		panel_2.add(lblNewLabel_2_1_1);
-		
-		txtRegisterUserName = new JTextField();
-		txtRegisterUserName.setColumns(10);
-		txtRegisterUserName.setBounds(137, 104, 214, 19);
-		panel_2.add(txtRegisterUserName);
-		
-		JLabel lblNewLabel_2_2 = new JLabel("Password");
-		lblNewLabel_2_2.setBounds(137, 168, 76, 13);
-		panel_2.add(lblNewLabel_2_2);
-		
-		txtRegisterPassword = new JTextField();
-		txtRegisterPassword.setColumns(10);
-		txtRegisterPassword.setBounds(137, 191, 214, 19);
-		panel_2.add(txtRegisterPassword);
-		
-		JButton btnRegister = new JButton("Resgister");
-		btnRegister.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CreateUser(txtRegisterUserName.getText(), txtRegisterPassword.getText());
-	
-			}
-		});
-		btnRegister.setBounds(199, 243, 96, 28);
-		panel_2.add(btnRegister);
-		
-	}
+        JLabel lblExpenseYearlyFrequency = new JLabel("Yearly Frequency:");
+        lblExpenseYearlyFrequency.setBounds(22, 266, 96, 13);
+        mainMenuPanel.add(lblExpenseYearlyFrequency);
+
+        txtExpenseYearlyFrequency = new JTextField();
+        txtExpenseYearlyFrequency.setBounds(116, 263, 96, 19);
+        mainMenuPanel.add(txtExpenseYearlyFrequency);
+        txtExpenseYearlyFrequency.setColumns(10);
+
+        JButton btnAddExpense = new JButton("Add");
+        btnAddExpense.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+                String source = txtExpenceSource.getText();
+                double amount = Double.parseDouble(txtExpenseAmount.getText());
+                int Yearly = Integer.parseInt(txtExpenseYearlyFrequency.getText());
+                
+                expenserCalulator.addExpense(getUserObject(), source, amount, Yearly);
+                System.out.println(getUserObject().toString());
+                
+                UpdateBalance();
+                UpdateSavings();
+            }
+        });
+        btnAddExpense.setBounds(71, 289, 85, 21);
+        mainMenuPanel.add(btnAddExpense);
+
+        JLabel lblAddIncome = new JLabel("Add Income:");
+        lblAddIncome.setBounds(335, 145, 108, 13);
+        mainMenuPanel.add(lblAddIncome);
+
+        JLabel lblIncomeSource = new JLabel("Source:");
+        lblIncomeSource.setBounds(280, 168, 84, 13);
+        mainMenuPanel.add(lblIncomeSource);
+
+        txtIncomeSource = new JTextField();
+        txtIncomeSource.setBounds(374, 165, 96, 19);
+        mainMenuPanel.add(txtIncomeSource);
+        txtIncomeSource.setColumns(10);
+
+        JLabel lblIncomeAmount = new JLabel("Amount:         $");
+        lblIncomeAmount.setBounds(280, 221, 96, 13);
+        mainMenuPanel.add(lblIncomeAmount);
+
+        txtIncomeAmount = new JTextField();
+        txtIncomeAmount.setBounds(374, 218, 96, 19);
+        mainMenuPanel.add(txtIncomeAmount);
+        txtIncomeAmount.setColumns(10);
+
+        JLabel lblIncomeMonth = new JLabel("Month:");
+        lblIncomeMonth.setBounds(280, 266, 96, 13);
+        mainMenuPanel.add(lblIncomeMonth);
+
+        txtIncomeMonth = new JTextField();
+        txtIncomeMonth.setBounds(374, 263, 96, 19);
+        mainMenuPanel.add(txtIncomeMonth);
+        txtIncomeMonth.setColumns(10);
+
+        JButton btnAddIncome = new JButton("Add");
+        btnAddIncome.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	
+                String source = txtIncomeSource.getText();
+                double amount = Double.parseDouble(txtIncomeAmount.getText());
+                String month = txtIncomeMonth.getText();
+                
+                expenserCalulator.addMonthlyIncome(getUserObject(), source, amount, month);
+                System.out.println(getUserObject().toString());
+                
+                UpdateBalance();
+                UpdateSavings();
+            }
+        });
+        btnAddIncome.setBounds(335, 289, 85, 21);
+        mainMenuPanel.add(btnAddIncome);
+
+        JButton btnFinancialReport = new JButton("My Financial Report");
+        btnFinancialReport.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                User user = getUserObject();
+                if (user != null) {
+                    expenserCalulator.PrintFullreport(user);
+                } else {
+                    JOptionPane.showMessageDialog(null, "User Not Found!");
+                }
+            }
+        });
+        btnFinancialReport.setBounds(280, 42, 149, 31);
+        mainMenuPanel.add(btnFinancialReport);
+      
+      	JButton btnExportCSV = new JButton("Export CSV");
+        btnExportCSV.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            User user = getUserObject();
+            if (user != null) {
+              try {
+                expenserCalulator.exportReportToCSV(user);
+                JOptionPane.showMessageDialog(null, "Report exported as CSV!");
+              } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Error exporting report: " + ex.getMessage());
+              }
+            } else {
+              JOptionPane.showMessageDialog(null, "User not found!");
+            }
+          }
+        });
+        btnExportCSV.setBounds(210, 331, 149, 31);
+        panel_1.add(btnExportCSV);
+
+        JButton btnLogout = new JButton("Logout");
+        btnLogout.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                CurrentUser = "";
+                showLoginPanel();
+            }
+        });
+        btnLogout.setBounds(199, 332, 96, 28);
+        mainMenuPanel.add(btnLogout);
+    }
+
+    private void showLoginPanel() {
+        loginPanel.setVisible(true);
+        registerPanel.setVisible(false);
+        mainMenuPanel.setVisible(false);
+    }
+
+    private void showRegisterPanel() {
+        loginPanel.setVisible(false);
+        registerPanel.setVisible(true);
+        mainMenuPanel.setVisible(false);
+    }
+
+    private void showMainMenuPanel() {
+        loginPanel.setVisible(false);
+        registerPanel.setVisible(false);
+        mainMenuPanel.setVisible(true);
+        UpdateBalance();
+        UpdateSavings();
+    }
 	
 	
 	public void CreateUser(String username, String password) {
@@ -366,17 +388,17 @@ public class EWalletApp extends JFrame {
 		return null;
 	}
 	
-	public void UpdateUserObject(User object) {
-		
-		for (int i = 0; i < AllUsers.size(); i++) {
-			
-			User currentUser = AllUsers.get(i);
-			if (currentUser.username.equals(CurrentUser)) {
-				
-				AllUsers.set(i, object);
-			}
-		}
-	}
+//	public void UpdateUserObject(User object) {
+//		
+//		for (int i = 0; i < AllUsers.size(); i++) {
+//			
+//			User currentUser = AllUsers.get(i);
+//			if (currentUser.username.equals(CurrentUser)) {
+//				
+//				AllUsers.set(i, object);
+//			}
+//		}
+//	}
 	
 	public void UpdateBalance() {
 		
@@ -403,6 +425,18 @@ public class EWalletApp extends JFrame {
 	            }
 
 	            txtBalance.setText(String.valueOf(incomeTotal - expensesTotal));
+	            break; // Exit the loop once the current user is found
+	        }
+	    }
+	}
+	
+	public void UpdateSavings() {
+		
+		for (int i = 0; i < AllUsers.size(); i++) {
+	        User currentUser = AllUsers.get(i);
+	        if (currentUser.username.equals(CurrentUser)) {
+	        	
+	        	txtMonthlySavings.setText(String.valueOf(expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
 	            break; // Exit the loop once the current user is found
 	        }
 	    }

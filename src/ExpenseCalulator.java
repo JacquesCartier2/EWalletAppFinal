@@ -1,8 +1,9 @@
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.swing.JOptionPane;
+
+import java.time.LocalDate;
 
 public class ExpenseCalulator implements Expenser {
 	
@@ -109,26 +110,34 @@ public class ExpenseCalulator implements Expenser {
 	}
 
 	@Override
-	public Currency convertForeignCurrency(Currency C, double amount) {
+	public double convertForeignCurrency(Currency C, double amount) {
 
 		// Convert to Canadian Dollar CAD
 		final double CADRATE = 1.37;
 		final double USDRATE = 0.73;
+		double outAmount = 0;
 
 		// to Canadian Dollar
 		if (C.getName().equals("USD")) {
-			C.setRate(USDRATE);
+			C.setRate(CADRATE);
 			C.setName("CAD");
+
+			outAmount = CADRATE * amount;
+			return outAmount;
 
 		}
 		// to US Dollar
 		if (C.getName().equals("CAD")) {
 			C.setRate(USDRATE);
 			C.setName("USD");
+
+			outAmount = USDRATE * amount;
+
 		}
+		// need to use printf to limit decmail places
+		return outAmount;
 
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -149,10 +158,37 @@ public class ExpenseCalulator implements Expenser {
 		return 0;
 	}
 
-	@Override
-	public void updateMonthlySavings() {
-		// TODO Auto-generated method stub
+	public double updateMonthlySavings(User user) {
+		
+		double monthlyExpenses = 0;
+		double monthlyIncome = 0;
+		
+		ArrayList<Expense> listOfExpense = user.getExpenses();
+        if (listOfExpense != null) {
+            for (int expenseNum = 0; expenseNum < listOfExpense.size(); expenseNum++) {
+                Expense currentExpense = listOfExpense.get(expenseNum);
+                monthlyExpenses += (currentExpense.amount * currentExpense.yearlyfrequency) / 12;
+            }
+        }
 
+        ArrayList<Wage> listOfIncome = user.getWages();
+        if (listOfIncome != null) {
+            for (int incomeNum = 0; incomeNum < listOfIncome.size(); incomeNum++) {
+                Wage currentIncome = listOfIncome.get(incomeNum);
+                
+                LocalDate currentDate = LocalDate.now();
+                String currentMonth = currentDate.getMonth().toString();
+                
+                System.out.println(currentMonth);
+                
+                if (currentMonth.equals(currentIncome.Month)) {
+                	
+                	monthlyIncome += currentIncome.getAmount();
+                }  
+            }
+        }
+		
+		return monthlyIncome - monthlyExpenses;
 	}
 
 }
