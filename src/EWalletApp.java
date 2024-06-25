@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 import javax.swing.JDesktopPane;
 import javax.swing.JList;
@@ -312,6 +313,25 @@ public class EWalletApp extends JFrame {
         });
         btnFinancialReport.setBounds(280, 42, 149, 31);
         mainMenuPanel.add(btnFinancialReport);
+      
+      	JButton btnExportCSV = new JButton("Export CSV");
+        btnExportCSV.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            User user = getUserObject();
+            if (user != null) {
+              try {
+                expenserCalulator.exportReportToCSV(user);
+                JOptionPane.showMessageDialog(null, "Report exported as CSV!");
+              } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Error exporting report: " + ex.getMessage());
+              }
+            } else {
+              JOptionPane.showMessageDialog(null, "User not found!");
+            }
+          }
+        });
+        btnExportCSV.setBounds(210, 331, 149, 31);
+        panel_1.add(btnExportCSV);
 
         JButton btnLogout = new JButton("Logout");
         btnLogout.addActionListener(new ActionListener() {
@@ -343,7 +363,6 @@ public class EWalletApp extends JFrame {
         UpdateBalance();
         UpdateSavings();
     }
-
 	
 	
 	public void CreateUser(String username, String password) {

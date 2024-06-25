@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -61,6 +63,20 @@ public class ExpenseCalulator implements Expenser {
 	    report.append("Net Balance: $" + netBalance + "\n");
 
 		JOptionPane.showMessageDialog(null, report.toString());
+	}
+
+	public void exportReportToCSV(User user) throws IOException {
+		FileWriter csvWriter = new FileWriter(user.getUserName() + "_report.csv");
+		csvWriter.append("Type, Source, Amount, Frequency/Month\n");
+
+		for (Wage wage : user.getWages()) {
+			csvWriter.append("Income," + wage.getSource() + "," + wage.getAmount() + "," + wage.getMonth() + "\n");
+		}
+		for (Expense expense : user.getExpenses()) {
+			csvWriter.append("Expense," + expense.getSource() + "," + expense.getAmount() + "," + expense.getYearlyfrequency() + "\n");
+		}
+		csvWriter.flush();
+		csvWriter.close();
 	}
 
 	@Override
