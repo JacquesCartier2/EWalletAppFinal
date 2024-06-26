@@ -366,7 +366,7 @@ public class EWalletApp extends JFrame {
                     txtBalance.setText(String.valueOf(outBalAmount));
 
                     outSaveAmount = (int) (inSaveAmount * C.getRate());
-                    txtMonthlySavings.setText(String.valueOf(expenserCalulator.updateMonthlySavings(AllUsers.get(0))));
+                    txtMonthlySavings.setText(String.valueOf(outSaveAmount));
                 }
             }
         });
