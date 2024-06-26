@@ -104,11 +104,11 @@ public class EWalletApp extends JFrame {
         JButton btnLogin = new JButton("Login");
         btnLogin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	
+
                 for (int i = 0; i < AllUsers.size(); i++) {
-                	
+
                     User currentUser = AllUsers.get(i);
-                    
+
                     if (currentUser.username.equals(txtLoginUserName.getText())) {
                         CurrentUser = txtLoginUserName.getText();
                         showMainMenuPanel();
@@ -123,9 +123,9 @@ public class EWalletApp extends JFrame {
         JButton btnToRegisterScreen = new JButton("Register");
         btnToRegisterScreen.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	
+
                 showRegisterPanel();
-                
+
             }
         });
         btnToRegisterScreen.setBounds(199, 293, 96, 28);
@@ -167,7 +167,7 @@ public class EWalletApp extends JFrame {
         JButton btnRegister = new JButton("Register");
         btnRegister.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	
+
                 CreateUser(txtRegisterUserName.getText(), txtRegisterPassword.getText());
                 showLoginPanel();
             }
@@ -236,14 +236,14 @@ public class EWalletApp extends JFrame {
         JButton btnAddExpense = new JButton("Add");
         btnAddExpense.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	
+
                 String source = txtExpenceSource.getText();
                 double amount = Double.parseDouble(txtExpenseAmount.getText());
                 int Yearly = Integer.parseInt(txtExpenseYearlyFrequency.getText());
-                
+
                 expenserCalulator.addExpense(getUserObject(), source, amount, Yearly);
                 System.out.println(getUserObject().toString());
-                
+
                 UpdateBalance();
                 UpdateSavings();
             }
@@ -285,14 +285,14 @@ public class EWalletApp extends JFrame {
         JButton btnAddIncome = new JButton("Add");
         btnAddIncome.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	
+
                 String source = txtIncomeSource.getText();
                 double amount = Double.parseDouble(txtIncomeAmount.getText());
                 String month = txtIncomeMonth.getText();
-                
+
                 expenserCalulator.addMonthlyIncome(getUserObject(), source, amount, month);
                 System.out.println(getUserObject().toString());
-                
+
                 UpdateBalance();
                 UpdateSavings();
             }
@@ -313,24 +313,24 @@ public class EWalletApp extends JFrame {
         });
         btnFinancialReport.setBounds(280, 42, 149, 31);
         mainMenuPanel.add(btnFinancialReport);
-      
-      	JButton btnExportCSV = new JButton("Export CSV");
+
+        JButton btnExportCSV = new JButton("Export CSV");
         btnExportCSV.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            User user = getUserObject();
-            if (user != null) {
-              try {
-                expenserCalulator.exportReportToCSV(user);
-                JOptionPane.showMessageDialog(null, "Report exported as CSV!");
-              } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, "Error exporting report: " + ex.getMessage());
-              }
-            } else {
-              JOptionPane.showMessageDialog(null, "User not found!");
+            public void actionPerformed(ActionEvent e) {
+                User user = getUserObject();
+                if (user != null) {
+                    try {
+                        expenserCalulator.exportReportToCSV(user);
+                        JOptionPane.showMessageDialog(null, "Report exported as CSV!");
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Error exporting report: " + ex.getMessage());
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "User not found!");
+                }
             }
-          }
         });
-        
+
         btnExportCSV.setBounds(280, 10, 149, 31);
         mainMenuPanel.add(btnExportCSV);
 
@@ -343,35 +343,37 @@ public class EWalletApp extends JFrame {
         });
         btnLogout.setBounds(199, 332, 96, 28);
         mainMenuPanel.add(btnLogout);
-        
-        
+
         String currencyList[] = { "USD", "CAD" };
-		JList<String> LstCurrency = new JList<String>(currencyList);
-		LstCurrency.setBounds(63, 37, 149, 36);
-		LstCurrency.setSelectedIndex(0);
-		mainMenuPanel.add(LstCurrency);
+        JList<String> LstCurrency = new JList<String>(currencyList);
+        LstCurrency.setBounds(63, 37, 149, 36);
+        LstCurrency.setSelectedIndex(0);
+        mainMenuPanel.add(LstCurrency);
+        // here
+        LstCurrency.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    double inBalAmount = Double.parseDouble(txtBalance.getText());
+                    double inSaveAmount = Double.parseDouble(txtMonthlySavings.getText());
+                    int outBalAmount;
+                    int outSaveAmount;
+                    String name = LstCurrency.getSelectedValue();
 
-		LstCurrency.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				if (!e.getValueIsAdjusting()) {
-					double inAmount = Double.parseDouble(txtBalance.getText());
-					int outAmount;
-					String name = LstCurrency.getSelectedValue();
+                    expenserCalulator.convertForeignCurrency(C, name);
 
-					expenserCalulator.convertForeignCurrency(C, name);
+                    outBalAmount = (int) (inBalAmount * C.getRate());
+                    txtBalance.setText(String.valueOf(outBalAmount));
 
-					outAmount = (int) (inAmount * C.getRate());
+                    outSaveAmount = (int) (inSaveAmount * C.getRate());
+                    txtMonthlySavings.setText(String.valueOf(expenserCalulator.updateMonthlySavings(AllUsers.get(0))));
+                }
+            }
+        });
 
-					txtBalance.setText(String.valueOf(outAmount));
-
-				}
-			}
-		});
-
-		JLabel lblNewLabel_1 = new JLabel("Currency in use:");
-		lblNewLabel_1.setBounds(63, 14, 108, 13);
-		mainMenuPanel.add(lblNewLabel_1);
+        JLabel lblNewLabel_1 = new JLabel("Currency in use:");
+        lblNewLabel_1.setBounds(63, 14, 108, 13);
+        mainMenuPanel.add(lblNewLabel_1);
     }
 
     private void showLoginPanel() {
@@ -393,71 +395,70 @@ public class EWalletApp extends JFrame {
         UpdateBalance();
         UpdateSavings();
     }
-	
-	
-	public void CreateUser(String username, String password) {
 
-		User user = new User(username, password);
-		AllUsers.add(user);
+    public void CreateUser(String username, String password) {
 
-		System.out.println("User added:/n Username: " + user.getUserName() + "/n Password: " + user.getPwd());
+        User user = new User(username, password);
+        AllUsers.add(user);
 
-		System.out.println(AllUsers.toString());
-	}
+        System.out.println("User added:/n Username: " + user.getUserName() + "/n Password: " + user.getPwd());
 
-	public User getUserObject() {
+        System.out.println(AllUsers.toString());
+    }
 
-		for (int i = 0; i < AllUsers.size(); i++) {
+    public User getUserObject() {
 
-			User currentUser = AllUsers.get(i);
-			if (currentUser.username.equals(CurrentUser)) {
+        for (int i = 0; i < AllUsers.size(); i++) {
 
-				return currentUser;
-			}
-		}
-		return null;
-	}
+            User currentUser = AllUsers.get(i);
+            if (currentUser.username.equals(CurrentUser)) {
 
-	public void UpdateBalance() {
+                return currentUser;
+            }
+        }
+        return null;
+    }
 
-		double expensesTotal = 0;
-		double incomeTotal = 0;
+    public void UpdateBalance() {
 
-		for (int i = 0; i < AllUsers.size(); i++) {
-			User currentUser = AllUsers.get(i);
-			if (currentUser.username.equals(CurrentUser)) {
-				ArrayList<Expense> listOfExpense = currentUser.getExpenses();
-				if (listOfExpense != null) {
-					for (int expenseNum = 0; expenseNum < listOfExpense.size(); expenseNum++) {
-						Expense currentExpense = listOfExpense.get(expenseNum);
-						expensesTotal += currentExpense.amount;
-					}
-				}
+        double expensesTotal = 0;
+        double incomeTotal = 0;
 
-				ArrayList<Wage> listOfIncome = currentUser.getWages();
-				if (listOfIncome != null) {
-					for (int incomeNum = 0; incomeNum < listOfIncome.size(); incomeNum++) {
-						Wage currentIncome = listOfIncome.get(incomeNum);
-						incomeTotal += currentIncome.getAmount();
-					}
-				}
+        for (int i = 0; i < AllUsers.size(); i++) {
+            User currentUser = AllUsers.get(i);
+            if (currentUser.username.equals(CurrentUser)) {
+                ArrayList<Expense> listOfExpense = currentUser.getExpenses();
+                if (listOfExpense != null) {
+                    for (int expenseNum = 0; expenseNum < listOfExpense.size(); expenseNum++) {
+                        Expense currentExpense = listOfExpense.get(expenseNum);
+                        expensesTotal += currentExpense.amount;
+                    }
+                }
 
-				txtBalance.setText(String.valueOf(incomeTotal - expensesTotal));
-				break; // Exit the loop once the current user is found
-			}
-		}
-	}
-	
-	public void UpdateSavings() {
-		
-		for (int i = 0; i < AllUsers.size(); i++) {
-	        User currentUser = AllUsers.get(i);
-	        if (currentUser.username.equals(CurrentUser)) {
-	        	
-	        	txtMonthlySavings.setText(String.valueOf(expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
-	            break; // Exit the loop once the current user is found
-	        }
-	    }
-	}
+                ArrayList<Wage> listOfIncome = currentUser.getWages();
+                if (listOfIncome != null) {
+                    for (int incomeNum = 0; incomeNum < listOfIncome.size(); incomeNum++) {
+                        Wage currentIncome = listOfIncome.get(incomeNum);
+                        incomeTotal += currentIncome.getAmount();
+                    }
+                }
+
+                txtBalance.setText(String.valueOf(incomeTotal - expensesTotal));
+                break; // Exit the loop once the current user is found
+            }
+        }
+    }
+
+    public void UpdateSavings() {
+
+        for (int i = 0; i < AllUsers.size(); i++) {
+            User currentUser = AllUsers.get(i);
+            if (currentUser.username.equals(CurrentUser)) {
+
+                txtMonthlySavings.setText(String.valueOf(expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
+                break; // Exit the loop once the current user is found
+            }
+        }
+    }
 
 }
