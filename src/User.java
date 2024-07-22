@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class User {
 	private ArrayList <Wage>Income;  // user income sources that user can record or view or search by type or month 
 	private ArrayList <Expense>Spending; //user's expenses 
+	private int ID;
 
 	String username;
 	String pwd;
