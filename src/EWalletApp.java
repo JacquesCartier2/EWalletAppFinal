@@ -91,7 +91,9 @@ public class EWalletApp extends JFrame {
         initializeReportPagePanel();
 
         // Initially show the login panel
-        showLoginPanel();
+        // showLoginPanel();
+     //   showMainMenuPanel();
+        showReportPagePanel();
 
     }
 
@@ -200,12 +202,12 @@ public class EWalletApp extends JFrame {
         mainMenuPanel.setLayout(null);
 
         JLabel lblBalance = new JLabel("Balance:");
-        lblBalance.setBounds(63, 83, 45, 13);
+        lblBalance.setBounds(63, 83, 96, 13);
         mainMenuPanel.add(lblBalance);
 
         txtBalance = new JTextField();
         txtBalance.setEditable(false);
-        txtBalance.setBounds(63, 97, 96, 19);
+        txtBalance.setBounds(63, 97, 96, 25);
         mainMenuPanel.add(txtBalance);
         txtBalance.setColumns(10);
 
@@ -224,7 +226,7 @@ public class EWalletApp extends JFrame {
         mainMenuPanel.add(lblAddExpense);
 
         JLabel lblExpenseSource = new JLabel("Source:");
-        lblExpenseSource.setBounds(22, 168, 84, 13);
+        lblExpenseSource.setBounds(30, 168, 84, 13);
         mainMenuPanel.add(lblExpenseSource);
 
         txtExpenceSource = new JTextField();
@@ -232,8 +234,8 @@ public class EWalletApp extends JFrame {
         mainMenuPanel.add(txtExpenceSource);
         txtExpenceSource.setColumns(10);
 
-        JLabel lblExpenseAmount = new JLabel("Amount:         $");
-        lblExpenseAmount.setBounds(22, 221, 96, 13);
+        JLabel lblExpenseAmount = new JLabel("Amount:          $");
+        lblExpenseAmount.setBounds(30, 221, 96, 13);
         mainMenuPanel.add(lblExpenseAmount);
 
         txtExpenseAmount = new JTextField();
@@ -242,7 +244,7 @@ public class EWalletApp extends JFrame {
         txtExpenseAmount.setColumns(10);
 
         JLabel lblExpenseYearlyFrequency = new JLabel("Yearly Frequency:");
-        lblExpenseYearlyFrequency.setBounds(22, 266, 96, 13);
+        lblExpenseYearlyFrequency.setBounds(10, 266, 115, 13);
         mainMenuPanel.add(lblExpenseYearlyFrequency);
 
         txtExpenseYearlyFrequency = new JTextField();
@@ -281,7 +283,7 @@ public class EWalletApp extends JFrame {
         mainMenuPanel.add(txtIncomeSource);
         txtIncomeSource.setColumns(10);
 
-        JLabel lblIncomeAmount = new JLabel("Amount:         $");
+        JLabel lblIncomeAmount = new JLabel("Amount:            $");
         lblIncomeAmount.setBounds(280, 221, 96, 13);
         mainMenuPanel.add(lblIncomeAmount);
 
@@ -331,25 +333,7 @@ public class EWalletApp extends JFrame {
         btnFinancialReport.setBounds(280, 42, 149, 31);
         mainMenuPanel.add(btnFinancialReport);
 
-        JButton btnExportCSV = new JButton("Export CSV");
-        btnExportCSV.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                User user = getUserObject();
-                if (user != null) {
-                    try {
-                        expenserCalulator.exportReportToCSV(user);
-                        JOptionPane.showMessageDialog(null, "Report exported as CSV!");
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(null, "Error exporting report: " + ex.getMessage());
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "User not found!");
-                }
-            }
-        });
-
-        btnExportCSV.setBounds(280, 10, 149, 31);
-        mainMenuPanel.add(btnExportCSV);
+   
 
         JButton btnLogout = new JButton("Logout");
         btnLogout.addActionListener(new ActionListener() {
@@ -438,7 +422,7 @@ public class EWalletApp extends JFrame {
     	
     	// Adding JList for Report Information 
 		JList<String> reportList = new JList<>(reportListModel);
-		reportList.setBounds(50, 50, 400, 400);
+		reportList.setBounds(25, 30, 450, 400);
 		reportPagePanel.add(reportList);
 
     	// Adding JButtons
@@ -476,7 +460,7 @@ public class EWalletApp extends JFrame {
          		showMainMenuPanel();
          	}
          });
-    	 menuButton.setBounds(450, 425, 100, 20);
+    	 menuButton.setBounds(0, 435, 100, 20);
     	 reportPagePanel.add(menuButton);
     	
 
