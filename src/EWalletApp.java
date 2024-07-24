@@ -1,8 +1,10 @@
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -11,9 +13,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import java.io.IOException;
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.event.ListSelectionEvent;
 
 public class EWalletApp extends JFrame {
@@ -24,6 +28,7 @@ public class EWalletApp extends JFrame {
     Currency C = new Currency(1.00, "USD");
     private String CurrentUser = "";
 
+    // JTextFields
     private JTextField txtLoginUserName;
     private JTextField txtLoginPassword;
     private JTextField txtExpenceSource;
@@ -42,6 +47,16 @@ public class EWalletApp extends JFrame {
     private JPanel loginPanel;
     private JPanel registerPanel;
     private JPanel mainMenuPanel;
+    private JPanel reportPagePanel;
+    
+    
+    // Generates ReportListModel List for JList GUI use 
+    // TODO CAN BE MOVED TO ANOTHER CLASS IF NEEDED
+    // TODO THIS WILL MOST LIKELY BE REPLACED BY DATABASE 
+   	DefaultListModel<String> reportListModel = new DefaultListModel<>();;
+   	
+   	// Used for File Chooser
+ 	JFileChooser importFile = new JFileChooser("C:\\",FileSystemView.getFileSystemView());
 
     /**
      * Launch the application.
@@ -73,9 +88,14 @@ public class EWalletApp extends JFrame {
         initializeLoginPanel();
         initializeRegisterPanel();
         initializeMainMenuPanel();
+        initializeReportPagePanel();
 
         // Initially show the login panel
-        showLoginPanel();
+        //TODO showLoginPanel();
+
+        //TODO TESTING FOR EASIER EDITING TO GUI
+        showMainMenuPanel();
+        //showReportPagePanel();
     }
 
     private void initializeLoginPanel() {
@@ -341,7 +361,7 @@ public class EWalletApp extends JFrame {
                 showLoginPanel();
             }
         });
-        btnLogout.setBounds(199, 332, 96, 28);
+        btnLogout.setBounds(0, 332, 96, 28);
         mainMenuPanel.add(btnLogout);
 
         String currencyList[] = { "USD", "CAD" };
@@ -374,26 +394,128 @@ public class EWalletApp extends JFrame {
         JLabel lblNewLabel_1 = new JLabel("Currency in use:");
         lblNewLabel_1.setBounds(63, 14, 108, 13);
         mainMenuPanel.add(lblNewLabel_1);
+
+        // TODO ADDING BUTTON FOR REPORTS (INCOME, EXPENSE, AND SORT BY TYPE) 
+        JButton reportsButton = new JButton("Report Page");
+        reportsButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+                showReportPagePanel();
+        	}
+        });
+        reportsButton.setBounds(100, 332, 125, 28); 
+        mainMenuPanel.add(reportsButton);
+        
+        // TODO ADDING BUTTONS FOR IMPORTING AND EXPORTING REPORTS
+        JButton importReportButton = new JButton("Import Report");
+        importReportButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		JOptionPane.showMessageDialog(null,"This button does nothing, yet! Add file chooser Functionality");        	}
+        });
+        importReportButton.setBounds(230, 332, 125, 28); 
+        mainMenuPanel.add(importReportButton);
+     
+     // TODO ADDING BUTTONS FOR IMPORTING AND EXPORTING REPORTS
+        JButton exportReportButton = new JButton("Import Report");
+        exportReportButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		JOptionPane.showMessageDialog(null,"This button does nothing, yet! Add file chooser Functionality");
+        	}
+        });
+        exportReportButton.setBounds(360, 332, 125, 28); 
+        mainMenuPanel.add(exportReportButton);
+        
+    
     }
+    
+
+    private void initializeReportPagePanel() {
+    	reportPagePanel = new JPanel();
+    	reportPagePanel.setBounds(43, 31, 550, 500);
+    	contentPane.add(reportPagePanel);
+    	reportPagePanel.setLayout(null);
+    	
+    	// Adding JTextfields
+    	JTextField filterInput = new JTextField();
+    	filterInput.setBounds(260, 0, 125, 20);
+    	reportPagePanel.add(filterInput);
+    	
+    	// Adding JList for Report Information 
+		JList<String> reportList = new JList<>(reportListModel);
+		reportList.setBounds(50, 50, 400, 400);
+		reportPagePanel.add(reportList);
+
+    	// Adding JButtons
+    	 JButton incomeReportButton = new JButton("Income Report");
+    	 incomeReportButton.addActionListener(new ActionListener() {
+         	public void actionPerformed(ActionEvent e) {
+         		JOptionPane.showMessageDialog(null,"This button does nothing, yet!");
+         		reportListModel.addElement("Hello There, I am testing this");
+         	}
+         });
+    	 incomeReportButton.setBounds(0, 0, 125, 20);
+    	 reportPagePanel.add(incomeReportButton);
+    	
+    	 JButton expenseReportButton = new JButton("Expense Report");
+    	 expenseReportButton.addActionListener(new ActionListener() {
+         	public void actionPerformed(ActionEvent e) {
+         		JOptionPane.showMessageDialog(null,"This button does nothing, yet!");
+         	}
+         });
+    	 expenseReportButton.setBounds(130, 0, 125, 20);
+    	 reportPagePanel.add(expenseReportButton);
+    	 
+    	 JButton filterButton = new JButton("Filter");
+    	 filterButton.addActionListener(new ActionListener() {
+         	public void actionPerformed(ActionEvent e) {
+         		JOptionPane.showMessageDialog(null,"This button does nothing, yet!");
+         	}
+         });
+    	 filterButton.setBounds(390, 0, 100, 20);
+    	 reportPagePanel.add(filterButton);
+    	 
+    	 JButton menuButton = new JButton("Main Menu");
+    	 menuButton.addActionListener(new ActionListener() {
+         	public void actionPerformed(ActionEvent e) {
+         		showMainMenuPanel();
+         	}
+         });
+    	 menuButton.setBounds(450, 425, 100, 20);
+    	 reportPagePanel.add(menuButton);
+    	
+
+
+    }
+    
 
     private void showLoginPanel() {
-        loginPanel.setVisible(true);
-        registerPanel.setVisible(false);
+    	loginPanel.setVisible(true);
+    	registerPanel.setVisible(false);
         mainMenuPanel.setVisible(false);
+        reportPagePanel.setVisible(false);
     }
 
     private void showRegisterPanel() {
         loginPanel.setVisible(false);
         registerPanel.setVisible(true);
         mainMenuPanel.setVisible(false);
+        reportPagePanel.setVisible(false);
+
     }
 
     private void showMainMenuPanel() {
         loginPanel.setVisible(false);
         registerPanel.setVisible(false);
         mainMenuPanel.setVisible(true);
+        reportPagePanel.setVisible(false);
         UpdateBalance();
         UpdateSavings();
+    }
+    
+    private void showReportPagePanel() {
+        loginPanel.setVisible(false);
+        registerPanel.setVisible(false);
+        mainMenuPanel.setVisible(false);
+        reportPagePanel.setVisible(true);
     }
 
     public void CreateUser(String username, String password) {
