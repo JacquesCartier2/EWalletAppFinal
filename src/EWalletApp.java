@@ -91,11 +91,8 @@ public class EWalletApp extends JFrame {
         initializeReportPagePanel();
 
         // Initially show the login panel
-        //TODO showLoginPanel();
+        showLoginPanel();
 
-        //TODO TESTING FOR EASIER EDITING TO GUI
-        showMainMenuPanel();
-        //showReportPagePanel();
     }
 
     private void initializeLoginPanel() {
@@ -415,7 +412,7 @@ public class EWalletApp extends JFrame {
         mainMenuPanel.add(importReportButton);
      
      // TODO ADDING BUTTONS FOR IMPORTING AND EXPORTING REPORTS
-        JButton exportReportButton = new JButton("Import Report");
+        JButton exportReportButton = new JButton("Export Report");
         exportReportButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		JOptionPane.showMessageDialog(null,"This button does nothing, yet! Add file chooser Functionality");
