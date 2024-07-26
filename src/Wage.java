@@ -43,8 +43,16 @@ public class Wage {
 		Month = month;
 	}
 	
+	public int getID() {
+		return ID;
+	}
+	
+	public void setID(int id) {
+		this.ID = id;
+	}
+	
 	 @Override
 	    public String toString() {
-	        return "Wage [source=" + source + ", amount=" + amount + ", Month=" + Month + "]";
+	        return "Wage [source=" + source + ", amount=" + amount + ", Month=" + Month + ", id=" + ID + "]";
 	    }
 }

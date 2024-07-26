@@ -13,6 +13,8 @@ public class ExpenseCalulator implements Expenser {
 		Expense expense = new Expense(source, amount, yearlyfrequency);
 		
 		database.AddExpense(expense, user);
+		int id = database.GetAvailableExpenseID(expense, user);
+		expense.setID(id);
 		user.addExpense(expense);
 	}
 
@@ -21,6 +23,8 @@ public class ExpenseCalulator implements Expenser {
 		Wage income = new Wage(source, amount, month);
 		
 		database.AddIncome(income, user);
+		int id = database.GetAvailableIncomeID(income, user);
+		income.setID(id);
 		user.addWage(income);
 	}
 

@@ -13,7 +13,7 @@ public class Database {
 	
 	//steps for setting up a local DB for testing:
 	// 1. right click the project in eclipse and select "properties", then navigate to "java build path>libraries" and add your local derby.jar to the classpath as an external jar, deleting any existing derby.jars from the classpath.
-	// 2. create an embedded derby DB, remember to disconnect from it before running any code.
+	// 2. create an embedded derby DB, remember to disconnect from it before running any code, and that only one instance of the program may be running at a time. 
 	// 3. replace the connectionLink variable with the connection link to your newly created DB.
 	// 4. in EWalletApp, just after "database.connect();" in initializeLoginPanel, copy and paste "database.DebugCreateTables();".
 	// 5. run the program, then close it. If no errors occured, the database will now have the correct tables. 
@@ -215,6 +215,77 @@ public class Database {
 		catch (SQLException sqlExcept){
 			sqlExcept.printStackTrace();
 			return false;
+		}
+	}
+	
+	//IDs are automatically generated in the DB, so when we add an income or expense through code we have no way of knowing what the ID is. Since multiple entries can have the same data except for the id,
+	//we must get all DB entries matching the other data, then we look through each one and if the id from the DB entry does not match an existing object, that id will be given to the object passed into the function.
+	
+	//see above comment. Returns -1 if an error occurs or id not found. 
+	public int GetAvailableExpenseID(Expense _expense, User _user) {
+		try {
+			statement = connection.createStatement(); //create a statement from the DB connection. 
+			
+			ResultSet results = statement.executeQuery("SELECT * FROM \"APP\".\"EXPENSES\" WHERE SOURCE = '" + _expense.source + "' AND AMOUNT = " + _expense.amount + " AND YEARLYFREQ = " + _expense.yearlyfrequency + " AND USER_NAME = '" + _user.username + "'"); //results will contain a list of DB entries.
+			
+			//there may be multiple expenses identical except for id in the DB, so look through all expenses in the user to see if the current ID matches any of them. 
+			//if there is a match, that means that the current id is already in use so you should move on to the next DB entry's ID to see if it is available in the live code. 
+			int currentID;
+			boolean IDAvailable = true;
+			while(results.next()) {
+				IDAvailable = true;
+				currentID = results.getInt("EXPENSEID");
+				
+				for(Expense exp : _user.getExpenses()) {
+					if(exp.getID() == currentID) {
+						IDAvailable = false;
+						break;
+					}
+				}
+				
+				if(IDAvailable) {
+					return currentID;
+				}
+			}
+			return -1;
+		}
+		catch (SQLException sqlExcept){
+			sqlExcept.printStackTrace();
+			return -1;
+		}
+	}
+	
+	//see above comment. Returns -1 if an error occurs or id not found. 
+	public int GetAvailableIncomeID(Wage _income, User _user) {
+		try {
+			statement = connection.createStatement(); //create a statement from the DB connection. 
+			
+			ResultSet results = statement.executeQuery("SELECT * FROM \"APP\".\"INCOMES\" WHERE SOURCE = '" + _income.source + "' AND AMOUNT = " + _income.amount + " AND MONTH = '" + _income.Month + "' AND USER_NAME = '" + _user.username + "'"); //results will contain a list of DB entries.
+			
+			//there may be multiple expenses identical except for id in the DB, so look through all expenses in the user to see if the current ID matches any of them. 
+			//if there is a match, that means that the current id is already in use so you should move on to the next DB entry's ID to see if it is available in the live code. 
+			int currentID;
+			boolean IDAvailable = true;
+			while(results.next()) {
+				IDAvailable = true;
+				currentID = results.getInt("INCOMEID");
+				
+				for(Wage inc : _user.getWages()) {
+					if(inc.getID() == currentID) {
+						IDAvailable = false;
+						break;
+					}
+				}
+				
+				if(IDAvailable) {
+					return currentID;
+				}
+			}
+			return -1;
+		}
+		catch (SQLException sqlExcept){
+			sqlExcept.printStackTrace();
+			return -1;
 		}
 	}
 	

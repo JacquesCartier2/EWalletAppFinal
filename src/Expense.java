@@ -44,8 +44,16 @@ public class Expense {
 		this.yearlyfrequency = yearlyfrequency;
 	}
 	
+	public int getID() {
+		return ID;
+	}
+	
+	public void setID(int id) {
+		this.ID = id;
+	}
+	
 	@Override
     public String toString() {
-        return "Expense [source=" + source + ", amount=" + amount + ", yearlyfrequency=" + yearlyfrequency + "]";
+        return "Expense [source=" + source + ", amount=" + amount + ", yearlyfrequency=" + yearlyfrequency + ", id=" + ID + "]";
     }
 }
