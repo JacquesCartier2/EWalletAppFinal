@@ -38,6 +38,7 @@ public class EWalletApp extends JFrame {
     private JTextField txtMonthlySavings;
 
     ExpenseCalulator expenserCalulator = new ExpenseCalulator();
+    Database database = new Database();
 
     private JPanel loginPanel;
     private JPanel registerPanel;

@@ -1,0 +1,258 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+//this class contains all code used to interact with the database. 
+public class Database {
+	private String connectionLink = "jdbc:derby:F:\\Program Files\\Apache Derby DB\\Databases\\SENG210_Final;create=false";
+	private static Connection connection = null; 
+	private static Statement statement = null;
+	
+	//open a connection to the database. Returns true if connection succeeds false otherwise. 
+	public boolean Connect() {
+		try
+		{
+			//Ensure that the correct driver class is present. 
+			Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
+			
+			//Get a connection.
+			connection = DriverManager.getConnection(connectionLink); 
+
+			System.out.println("DB connection successful. ");
+			return true;
+		}
+		catch (Exception except)
+		{
+			except.printStackTrace();
+			return false;
+		}
+	}
+	
+	//add a user to the DB. 
+	public boolean AddUser(User _user) {
+		try
+		{
+			statement = connection.createStatement();
+			statement.execute("INSERT INTO USERS VALUES ('" + _user.getUserName() + "','" + _user.getPwd() +  "')");
+			statement.close();
+			return true;
+		}
+		catch (SQLException sqlExcept)
+		{
+			sqlExcept.printStackTrace();
+			return false;
+		}
+	}
+	
+	//add an income to the DB. 
+	public boolean AddIncome(Wage _income, User _user) {
+		try
+		{
+			statement = connection.createStatement();
+			statement.execute("INSERT INTO INCOMES (SOURCE,AMOUNT,MONTH,USER_NAME) VALUES ('" + _income.getSource() + "'," + _income.getAmount() + ",'" + _income.getMonth() + "','" + _user.getUserName() + "')");
+			statement.close();
+			return true;
+		}
+		catch (SQLException sqlExcept)
+		{
+			sqlExcept.printStackTrace();
+			return false;
+		}
+	}
+	
+	//add an income to the DB. 
+	public boolean AddExpense(Expense _expense, User _user) {
+		try
+		{
+			statement = connection.createStatement();
+			statement.execute("INSERT INTO EXPENSES (SOURCE,AMOUNT,YEARLYFREQ,USER_NAME) VALUES ('" + _expense.getSource() + "'," + _expense.getAmount() + "," + _expense.getYearlyfrequency() + ",'" + _user.getUserName() + "')");
+			statement.close();
+			return true;
+		}
+		catch (SQLException sqlExcept)
+		{
+			sqlExcept.printStackTrace();
+			return false;
+		}
+	}
+	
+	//returns an arraylist of all users (and their income/expenses) stored in the database. Returns null if errors occur. 
+	public ArrayList<User> GetAllData(){
+		ArrayList<User> returnList = new ArrayList<User>();
+		ResultSet results;
+		
+		//get the users
+		try {
+			statement = connection.createStatement(); //create a statement from the DB connection. 
+			
+			results = statement.executeQuery("SELECT * FROM \"APP\".\"USERS\""); //results will contain a list of DB entries.
+			
+			//add users from results into returnList.
+			while(results.next())
+			{
+				returnList.add(new User(results.getString("NAME"), results.getString("PASSWORD")));
+			}
+		}
+		catch (SQLException sqlExcept){
+			sqlExcept.printStackTrace();
+			return null;
+		}
+		
+		//get the incomes.
+		try {
+			statement = connection.createStatement(); //create a statement from the DB connection. 
+			
+			results = statement.executeQuery("SELECT * FROM \"APP\".\"INCOMES\""); //results will contain a list of DB entries.
+			
+			//add users from results into returnList.
+			while(results.next())
+			{
+				//find the user with a matching username.
+				for(User user : returnList) {
+					if(user.username.equals(results.getString("USER_NAME"))) {
+						user.addWage(new Wage(results.getString("SOURCE"), results.getDouble("AMOUNT"), results.getString("MONTH"), results.getInt("INCOMEID")));
+						break;
+					}
+				}
+			}
+		}
+		catch (SQLException sqlExcept){
+			sqlExcept.printStackTrace();
+			return null;
+		}
+		
+		//get the expenses.
+		try {
+			statement = connection.createStatement(); //create a statement from the DB connection. 
+			
+			results = statement.executeQuery("SELECT * FROM \"APP\".\"EXPENSES\""); //results will contain a list of DB entries.
+			
+			//add users from results into returnList.
+			while(results.next())
+			{
+				//find the user with a matching username.
+				for(User user : returnList) {
+					if(user.username.equals(results.getString("USER_NAME"))) {
+						user.addExpense(new Expense(results.getString("SOURCE"), results.getDouble("AMOUNT"), results.getInt("YEARLYFREQ"), results.getInt("EXPENSEID")));
+						break;
+					}
+				}
+			}
+		}
+		catch (SQLException sqlExcept){
+			sqlExcept.printStackTrace();
+			return null;
+		}
+		
+		return returnList;
+	}
+	
+	//returns true is a user is already in the database false otherwise. Also returns false if an error occurs. 
+	public boolean CheckForUser(String _username) {
+		try {
+			statement = connection.createStatement(); //create a statement from the DB connection. 
+			
+			ResultSet results = statement.executeQuery("SELECT * FROM \"APP\".\"USERS\" WHERE NAME = '" + _username + "'"); //results will contain a list of DB entries.
+			
+			if(results.next() == true) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		catch (SQLException sqlExcept){
+			sqlExcept.printStackTrace();
+			return false;
+		}
+	}
+	
+	//returns true is an expense is already in the database false otherwise. Also returns false if an error occurs. 
+	public boolean CheckForExpense(int _id) {
+		try {
+			statement = connection.createStatement(); //create a statement from the DB connection. 
+			
+			ResultSet results = statement.executeQuery("SELECT * FROM \"APP\".\"EXPENSES\" WHERE EXPENSEID = " + _id); //results will contain a list of DB entries.
+			
+			if(results.next() == true) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		catch (SQLException sqlExcept){
+			sqlExcept.printStackTrace();
+			return false;
+		}
+	}
+	
+	//returns true is an income is already in the database false otherwise. Also returns false if an error occurs. 
+	public boolean CheckForIncome(int _id) {
+		try {
+			statement = connection.createStatement(); //create a statement from the DB connection. 
+			
+			ResultSet results = statement.executeQuery("SELECT * FROM \"APP\".\"INCOMES\" WHERE INCOMEID = " + _id); //results will contain a list of DB entries.
+			
+			if(results.next() == true) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		catch (SQLException sqlExcept){
+			sqlExcept.printStackTrace();
+			return false;
+		}
+	}
+	
+	//create tables to store data for User, Expense, and Income. This should only be used to set up embedded DBs for local testing. 
+	public void DebugCreateTables() {
+		try
+		{
+			//"GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)" is derby syntax for auto-increment. 
+			statement = connection.createStatement();
+			statement.execute("CREATE TABLE Users (Name varchar(255) PRIMARY KEY, Password varchar(255) NOT NULL)");
+			statement.close();
+			System.out.println("Users table created. ");
+			
+			statement = connection.createStatement();
+			statement.execute("CREATE TABLE Expenses (ExpenseID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), Source varchar(255), Amount double NOT NULL, YearlyFreq int NOT NULL, User_Name varchar(255) NOT NULL)");
+			statement.close();
+			System.out.println("Expenses table created. ");
+			
+			statement = connection.createStatement();
+			statement.execute("CREATE TABLE Incomes (IncomeID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), Source varchar(255), Amount double NOT NULL, Month varchar(255), User_Name varchar(255) NOT NULL)");
+			statement.close();
+			System.out.println("Incomes table created. ");
+			
+		}
+		catch (SQLException sqlExcept)
+		{
+			sqlExcept.printStackTrace();
+		}
+	}
+	
+	//drop a table from the database. This should only be used to set up embedded DBs for local testing. 
+	public void DebugDropTable(String _tableName) {
+		try
+		{
+			statement = connection.createStatement();
+			statement.execute("DROP TABLE " + _tableName);
+			statement.close();
+			System.out.println(_tableName + " dropped. ");
+		}
+		catch (SQLException sqlExcept)
+		{
+			sqlExcept.printStackTrace();
+		}
+	}
+	
+	public Database() {
+		
+	}
+}

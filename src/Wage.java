@@ -11,6 +11,13 @@ public class Wage {
 		this.amount = amount;
 		Month = month;
 	}
+	public Wage(String source, double amount, String month, int id) {
+		super();
+		this.source = source;
+		this.amount = amount;
+		Month = month;
+		this.ID = id;
+	}
 
 	public String getSource() {
 		return source;
