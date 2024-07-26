@@ -80,6 +80,11 @@ public class EWalletApp extends JFrame {
     }
 
     private void initializeLoginPanel() {
+    	//connect to the database and get data.
+    	database.Connect();
+    	expenserCalulator.database = database;
+    	AllUsers = database.GetAllData();
+    	
         loginPanel = new JPanel();
         loginPanel.setBounds(43, 31, 527, 406);
         contentPane.add(loginPanel);
@@ -401,6 +406,7 @@ public class EWalletApp extends JFrame {
 
         User user = new User(username, password);
         AllUsers.add(user);
+        database.AddUser(user);
 
         System.out.println("User added:/n Username: " + user.getUserName() + "/n Password: " + user.getPwd());
 

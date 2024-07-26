@@ -11,6 +11,14 @@ public class Database {
 	private static Connection connection = null; 
 	private static Statement statement = null;
 	
+	//steps for setting up a local DB for testing:
+	// 1. right click the project in eclipse and select "properties", then navigate to "java build path>libraries" and add your local derby.jar to the classpath as an external jar, deleting any existing derby.jars from the classpath.
+	// 2. create an embedded derby DB, remember to disconnect from it before running any code.
+	// 3. replace the connectionLink variable with the connection link to your newly created DB.
+	// 4. in EWalletApp, just after "database.connect();" in initializeLoginPanel, copy and paste "database.DebugCreateTables();".
+	// 5. run the program, then close it. If no errors occured, the database will now have the correct tables. 
+	// 6. delete the "database.DebugCreateTables();" line. 
+	
 	//open a connection to the database. Returns true if connection succeeds false otherwise. 
 	public boolean Connect() {
 		try

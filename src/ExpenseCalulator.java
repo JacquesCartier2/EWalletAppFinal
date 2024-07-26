@@ -6,18 +6,21 @@ import javax.swing.JOptionPane;
 import java.time.LocalDate;
 
 public class ExpenseCalulator implements Expenser {
-
+	public Database database = null;
+	
 	@Override
 	public void addExpense(User user, String source, double amount, int yearlyfrequency) {
 		Expense expense = new Expense(source, amount, yearlyfrequency);
-
+		
+		database.AddExpense(expense, user);
 		user.addExpense(expense);
 	}
 
 	@Override
 	public void addMonthlyIncome(User user, String source, double amount, String month) {
 		Wage income = new Wage(source, amount, month);
-
+		
+		database.AddIncome(income, user);
 		user.addWage(income);
 	}
 
