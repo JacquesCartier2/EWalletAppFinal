@@ -36,8 +36,8 @@ public class Wage {
 		Month = month;
 	}
 	
-	 @Override
-	    public String toString() {
-	        return "Wage [source=" + source + ", amount=" + amount + ", Month=" + Month + "]";
-	    }
+	@Override
+	public String toString() {
+		return "Wage [source=" + source + ", amount=" + amount + ", Month=" + Month + "]";
+	}
 }
