@@ -31,6 +31,13 @@ public class User {
 		return Spending;
 	}
 	
+	public void addExpenseList(Expense Ex) {
+		Spending.add(Ex);
+	}
+	
+	public void addIncomeList(Wage W) {
+		Income.add(W);
+	}
 
 	public String getPwd() {
 		return this.pwd;

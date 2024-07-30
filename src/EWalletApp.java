@@ -73,6 +73,11 @@ public class EWalletApp extends JFrame {
             }
         });
     }
+    
+    
+    public void PopupMessage(String _message) {
+		JOptionPane.showMessageDialog(this, _message);
+	}
 
     /**
      * Create the frame.
@@ -371,6 +376,30 @@ public class EWalletApp extends JFrame {
     			}
     		}
     	});
+    	
+    	JButton importIncomeFileButton	= new JButton("Import Income File");			// Used in mainPanel()
+    	JButton importExpenseFileButton = new JButton("Import Expense File");
+    	
+		// TODO Import File Button Action
+		importIncomeFileButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				importFile.showSaveDialog(null);
+
+				if (importFile.getSelectedFile() != null) {
+					expenserCalulator.loadIncomeFile(importFile.getSelectedFile().getAbsolutePath());
+				}
+			}
+		});
+
+		importExpenseFileButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				importFile.showSaveDialog(null);
+
+				if (importFile.getSelectedFile() != null) {
+					expenserCalulator.loadExpenseFile(importFile.getSelectedFile().getAbsolutePath());
+				}
+			}
+		});
 
     	JLabel lblNewLabel_1 = new JLabel("Currency in use:");
     	lblNewLabel_1.setBounds(63, 14, 108, 13);
@@ -385,15 +414,39 @@ public class EWalletApp extends JFrame {
     	});
     	reportsButton.setBounds(100, 332, 125, 28); 
     	mainMenuPanel.add(reportsButton);
+    	
+    	class NewFrame extends JFrame {
+    	    public NewFrame() {
+    	        // Set up the new frame
+    	        setSize(300, 200);
+    	        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    	    }
+    	}
 
     	// TODO ADDING BUTTONS FOR IMPORTING AND EXPORTING REPORTS
     	JButton importReportButton = new JButton("Import Report");
     	importReportButton.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			JOptionPane.showMessageDialog(null,"This button does nothing, yet! Add file chooser Functionality");        	}
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				NewFrame newFrame = new NewFrame();
+				newFrame.setTitle("Import Income File");
+				newFrame.add(importIncomeFileButton);
+				newFrame.setLocation(10,  10);
+				
+				NewFrame newFrame2 = new NewFrame();
+				newFrame2.setTitle("Import Expense File");
+				newFrame2.add(importExpenseFileButton);
+				newFrame2.setLocation(320, 10);
+				newFrame.setVisible(true);
+				newFrame2.setVisible(true);
+				
+			}
     	});
     	importReportButton.setBounds(230, 332, 125, 28); 
     	mainMenuPanel.add(importReportButton);
+    	
+    	
 
     	// TODO ADDING BUTTONS FOR IMPORTING AND EXPORTING REPORTS
     	JButton exportReportButton = new JButton("Export Report");
