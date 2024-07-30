@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.*;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,7 +10,8 @@ import java.time.LocalDate;
 
 public class ExpenseCalulator implements Expenser {
 	public Database database = null;
-	
+	public EWalletApp gui;
+
 	@Override
 	public void addExpense(User user, String source, double amount, int yearlyfrequency) {
 		Expense expense = new Expense(source, amount, yearlyfrequency);
@@ -112,6 +116,10 @@ public class ExpenseCalulator implements Expenser {
 
 	}
 
+	public void IOError(String error) {
+		gui.PopupMessage("IO Error: " + error);
+	}
+	
 	@Override
 	public void exportReport(String reportTitle) {
 		// TODO Auto-generated method stub
@@ -140,14 +148,164 @@ public class ExpenseCalulator implements Expenser {
 
 	@Override
 	public boolean loadExpenseFile(String filePath) {
-		// TODO Auto-generated method stub
-		return false;
+		File loadedFile = null;
+		
+		
+		try {
+			loadedFile = new File(filePath);
+		}
+		catch(Exception E) {
+			IOError("file not found. ");
+		}
+		
+		try {
+			ArrayList<Expense> expenses = new ArrayList<Expense>(); //data read from the file will be stored here and added to userAtHand if no problems occur. 
+			
+			BufferedReader br = new BufferedReader(new FileReader(loadedFile));
+			String line = "";
+			String source;
+			double amount;
+			int yearlyFrequency;
+			int lineNumber = 1; //used to keep track of which line is being read. 
+			
+			br.readLine(); //first line contains data field names and should be skipped. 
+			
+			while ((line = br.readLine()) != null) {   //go through each line in the file
+				lineNumber++;
+				
+				//if a line is completely empty, ignore it.
+				if(line.equals("")) {
+					continue;
+				}
+				
+				String[] splitLine = line.split(",");   // use comma as separator to split the line into parts.
+				
+				if(splitLine.length < 3) {
+					IOError("invalid data on line " + lineNumber + ", 3 data points are required for each line. ");
+					br.close();
+					return false;
+				}
+				
+				//first data point is source. 
+				source = splitLine[0];
+				
+				//second data point is amount, must be parse-able as double. 
+				try {
+					amount = Double.parseDouble(splitLine[1]);
+				}
+				catch(Exception E) {
+					IOError("invalid data on line " + lineNumber + ", second data point must be a number. ");
+					br.close();
+					return false;
+				}
+				
+				//third data point is yearly frequency, must be parse-able as int. 
+				try {
+					yearlyFrequency = Integer.parseInt(splitLine[2]);
+				}
+				catch(Exception E) {
+					IOError("invalid data on line " + lineNumber + ", third data point must be an integer. ");
+					br.close();
+					return false;
+				}
+				
+				//if all three data points work, add a new expense.
+				expenses.add(new Expense(source, amount, yearlyFrequency));
+			}
+			
+			br.close();
+			
+			//if no problems occurred while reading the data, add everything from expenses to the userAtHand's Spending list. 
+			for(Expense exp : expenses) {
+				userAtHand.addExpenseList(exp);
+			}
+			
+			// Update Monthly Savings 
+			updateMonthlySavings(userAtHand);
+			
+			return true;
+		}
+		catch(Exception E){
+			IOError(E.toString());
+			return false;
+		}
 	}
 
 	@Override
 	public boolean loadIncomeFile(String filePath) {
-		// TODO Auto-generated method stub
-		return false;
+		File loadedFile = null;
+		
+		
+		try {
+			loadedFile = new File(filePath);
+		}
+		catch(Exception E) {
+			IOError("file not found. ");
+		}
+		
+		try {
+			ArrayList<Wage> incomes = new ArrayList<Wage>(); //data read from the file will be stored here and added to userAtHand if no problems occur. 
+			
+			BufferedReader br = new BufferedReader(new FileReader(loadedFile));
+			String line = "";
+			String source;
+			double amount;
+			String month;
+			int lineNumber = 1; //used to keep track of which line is being read. 
+			
+			br.readLine(); //first line contains data field names and should be skipped. 
+			
+			while ((line = br.readLine()) != null) {   //go through each line in the file
+				lineNumber++;
+				
+				//if a line is completely empty, ignore it.
+				if(line.equals("")) {
+					continue;
+				}
+				
+				String[] splitLine = line.split(",");   // use comma as separator to split the line into parts.
+				
+				if(splitLine.length < 3) {
+					IOError("invalid data on line " + lineNumber + ", 3 data points are required for each line. ");
+					br.close();
+					return false;
+				}
+				
+				//first data point is source. 
+				source = splitLine[0];
+				
+				//second data point is amount, must be parse-able as double. 
+				try {
+					amount = Double.parseDouble(splitLine[1]);
+				}
+				catch(Exception E) {
+					IOError("invalid data on line " + lineNumber + ", second data point must be a number. ");
+					br.close();
+					return false;
+				}
+				
+				//third data point is month. 
+				month = splitLine[2];
+				
+				//if all three data points work, add a new expense.
+				incomes.add(new Wage(source, amount, month));
+			}
+			
+			br.close();
+			
+			//if no problems occurred while reading the data, add everything from expenses to the userAtHand's Spending list. 
+			for(Wage inc : incomes) {
+				userAtHand.addIncomeList(inc);
+			}
+			// Updates Monthly savings
+			updateMonthlySavings(userAtHand);
+			
+			return true;
+		}
+		catch(Exception E){
+			IOError(E.toString());
+			return false;
+		}
 	}
 
 	@Override

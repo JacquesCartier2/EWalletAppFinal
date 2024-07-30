@@ -1,8 +1,10 @@
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -11,9 +13,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import java.io.IOException;
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.event.ListSelectionEvent;
 
 public class EWalletApp extends JFrame {
@@ -24,6 +28,7 @@ public class EWalletApp extends JFrame {
     Currency C = new Currency(1.00, "USD");
     private String CurrentUser = "";
 
+    // JTextFields
     private JTextField txtLoginUserName;
     private JTextField txtLoginPassword;
     private JTextField txtExpenceSource;
@@ -43,6 +48,16 @@ public class EWalletApp extends JFrame {
     private JPanel loginPanel;
     private JPanel registerPanel;
     private JPanel mainMenuPanel;
+    private JPanel reportPagePanel;
+    
+    
+    // Generates ReportListModel List for JList GUI use 
+    // TODO CAN BE MOVED TO ANOTHER CLASS IF NEEDED
+    // TODO THIS WILL MOST LIKELY BE REPLACED BY DATABASE 
+   	DefaultListModel<String> reportListModel = new DefaultListModel<>();;
+   	
+   	// Used for File Chooser
+ 	JFileChooser importFile = new JFileChooser("C:\\",FileSystemView.getFileSystemView());
 
     /**
      * Launch the application.
@@ -59,6 +74,11 @@ public class EWalletApp extends JFrame {
             }
         });
     }
+    
+    
+    public void PopupMessage(String _message) {
+		JOptionPane.showMessageDialog(this, _message);
+	}
 
     /**
      * Create the frame.
@@ -74,9 +94,13 @@ public class EWalletApp extends JFrame {
         initializeLoginPanel();
         initializeRegisterPanel();
         initializeMainMenuPanel();
+        initializeReportPagePanel();
 
         // Initially show the login panel
         showLoginPanel();
+        // showMainMenuPanel();
+        // showReportPagePanel();
+
     }
 
     private void initializeLoginPanel() {
@@ -84,322 +108,454 @@ public class EWalletApp extends JFrame {
     	database.Connect();
     	expenserCalulator.database = database;
     	AllUsers = database.GetAllData();
-    	
-        loginPanel = new JPanel();
-        loginPanel.setBounds(43, 31, 527, 406);
-        contentPane.add(loginPanel);
-        loginPanel.setLayout(null);
-        JLabel lblLoginUserName = new JLabel("User Name");
-        lblLoginUserName.setBounds(137, 81, 76, 13);
-        loginPanel.add(lblLoginUserName);
 
-        txtLoginUserName = new JTextField();
-        txtLoginUserName.setBounds(137, 104, 214, 19);
-        loginPanel.add(txtLoginUserName);
-        txtLoginUserName.setColumns(10);
+    	loginPanel = new JPanel();
+    	loginPanel.setBounds(43, 31, 527, 406);
+    	contentPane.add(loginPanel);
+    	loginPanel.setLayout(null);
+    	JLabel lblLoginUserName = new JLabel("User Name");
+    	lblLoginUserName.setBounds(137, 81, 76, 13);
+    	loginPanel.add(lblLoginUserName);
 
-        JLabel lblLoginPassword = new JLabel("Password");
-        lblLoginPassword.setBounds(137, 168, 76, 13);
-        loginPanel.add(lblLoginPassword);
+    	txtLoginUserName = new JTextField();
+    	txtLoginUserName.setBounds(137, 104, 214, 19);
+    	loginPanel.add(txtLoginUserName);
+    	txtLoginUserName.setColumns(10);
 
-        txtLoginPassword = new JTextField();
-        txtLoginPassword.setBounds(137, 191, 214, 19);
-        loginPanel.add(txtLoginPassword);
-        txtLoginPassword.setColumns(10);
+    	JLabel lblLoginPassword = new JLabel("Password");
+    	lblLoginPassword.setBounds(137, 168, 76, 13);
+    	loginPanel.add(lblLoginPassword);
 
-        JButton btnLogin = new JButton("Login");
-        btnLogin.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+    	txtLoginPassword = new JTextField();
+    	txtLoginPassword.setBounds(137, 191, 214, 19);
+    	loginPanel.add(txtLoginPassword);
+    	txtLoginPassword.setColumns(10);
 
-                for (int i = 0; i < AllUsers.size(); i++) {
+    	JButton btnLogin = new JButton("Login");
+    	btnLogin.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
 
-                    User currentUser = AllUsers.get(i);
+    			for (int i = 0; i < AllUsers.size(); i++) {
 
-                    if (currentUser.username.equals(txtLoginUserName.getText())) {
-                        CurrentUser = txtLoginUserName.getText();
-                        showMainMenuPanel();
-                        break;
-                    }
-                }
-            }
-        });
-        btnLogin.setBounds(199, 249, 96, 28);
-        loginPanel.add(btnLogin);
+    				User currentUser = AllUsers.get(i);
 
-        JButton btnToRegisterScreen = new JButton("Register");
-        btnToRegisterScreen.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+    				if (currentUser.username.equals(txtLoginUserName.getText())) {
+    					CurrentUser = txtLoginUserName.getText();
+    					showMainMenuPanel();
+    					break;
+    				}
+    			}
+    		}
+    	});
+    	btnLogin.setBounds(199, 249, 96, 28);
+    	loginPanel.add(btnLogin);
 
-                showRegisterPanel();
+    	JButton btnToRegisterScreen = new JButton("Register");
+    	btnToRegisterScreen.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
 
-            }
-        });
-        btnToRegisterScreen.setBounds(199, 293, 96, 28);
-        loginPanel.add(btnToRegisterScreen);
+    			showRegisterPanel();
 
-        JLabel lblLogin = new JLabel("Login");
-        lblLogin.setBounds(219, 44, 76, 13);
-        loginPanel.add(lblLogin);
+    		}
+    	});
+    	btnToRegisterScreen.setBounds(199, 293, 96, 28);
+    	loginPanel.add(btnToRegisterScreen);
+
+    	JLabel lblLogin = new JLabel("Login");
+    	lblLogin.setBounds(219, 44, 76, 13);
+    	loginPanel.add(lblLogin);
     }
 
     private void initializeRegisterPanel() {
-        registerPanel = new JPanel();
-        registerPanel.setBounds(43, 31, 527, 406);
-        contentPane.add(registerPanel);
-        registerPanel.setLayout(null);
+    	registerPanel = new JPanel();
+    	registerPanel.setBounds(43, 31, 527, 406);
+    	contentPane.add(registerPanel);
+    	registerPanel.setLayout(null);
 
-        JLabel lblRegister = new JLabel("Register");
-        lblRegister.setBounds(219, 44, 76, 13);
-        registerPanel.add(lblRegister);
+    	JLabel lblRegister = new JLabel("Register");
+    	lblRegister.setBounds(219, 44, 76, 13);
+    	registerPanel.add(lblRegister);
 
-        JLabel lblRegisterUserName = new JLabel("User Name");
-        lblRegisterUserName.setBounds(137, 81, 76, 13);
-        registerPanel.add(lblRegisterUserName);
+    	JLabel lblRegisterUserName = new JLabel("User Name");
+    	lblRegisterUserName.setBounds(137, 81, 76, 13);
+    	registerPanel.add(lblRegisterUserName);
 
-        txtRegisterUserName = new JTextField();
-        txtRegisterUserName.setBounds(137, 104, 214, 19);
-        registerPanel.add(txtRegisterUserName);
-        txtRegisterUserName.setColumns(10);
+    	txtRegisterUserName = new JTextField();
+    	txtRegisterUserName.setBounds(137, 104, 214, 19);
+    	registerPanel.add(txtRegisterUserName);
+    	txtRegisterUserName.setColumns(10);
 
-        JLabel lblRegisterPassword = new JLabel("Password");
-        lblRegisterPassword.setBounds(137, 168, 76, 13);
-        registerPanel.add(lblRegisterPassword);
+    	JLabel lblRegisterPassword = new JLabel("Password");
+    	lblRegisterPassword.setBounds(137, 168, 76, 13);
+    	registerPanel.add(lblRegisterPassword);
 
-        txtRegisterPassword = new JTextField();
-        txtRegisterPassword.setBounds(137, 191, 214, 19);
-        registerPanel.add(txtRegisterPassword);
-        txtRegisterPassword.setColumns(10);
+    	txtRegisterPassword = new JTextField();
+    	txtRegisterPassword.setBounds(137, 191, 214, 19);
+    	registerPanel.add(txtRegisterPassword);
+    	txtRegisterPassword.setColumns(10);
 
-        JButton btnRegister = new JButton("Register");
-        btnRegister.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+    	JButton btnRegister = new JButton("Register");
+    	btnRegister.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
 
-                CreateUser(txtRegisterUserName.getText(), txtRegisterPassword.getText());
-                showLoginPanel();
-            }
-        });
-        btnRegister.setBounds(199, 243, 96, 28);
-        registerPanel.add(btnRegister);
+    			CreateUser(txtRegisterUserName.getText(), txtRegisterPassword.getText());
+    			showLoginPanel();
+    		}
+    	});
+    	btnRegister.setBounds(199, 243, 96, 28);
+    	registerPanel.add(btnRegister);
     }
 
     private void initializeMainMenuPanel() {
-        mainMenuPanel = new JPanel();
-        mainMenuPanel.setBounds(43, 31, 527, 406);
-        contentPane.add(mainMenuPanel);
-        mainMenuPanel.setLayout(null);
+    	mainMenuPanel = new JPanel();
+    	mainMenuPanel.setBounds(43, 31, 527, 406);
+    	contentPane.add(mainMenuPanel);
+    	mainMenuPanel.setLayout(null);
 
-        JLabel lblBalance = new JLabel("Balance:");
-        lblBalance.setBounds(63, 83, 45, 13);
-        mainMenuPanel.add(lblBalance);
+    	JLabel lblBalance = new JLabel("Balance:");
+    	lblBalance.setBounds(63, 83, 96, 13);
+    	mainMenuPanel.add(lblBalance);
 
-        txtBalance = new JTextField();
-        txtBalance.setEditable(false);
-        txtBalance.setBounds(63, 97, 96, 19);
-        mainMenuPanel.add(txtBalance);
-        txtBalance.setColumns(10);
+    	txtBalance = new JTextField();
+    	txtBalance.setEditable(false);
+    	txtBalance.setBounds(63, 97, 96, 25);
+    	mainMenuPanel.add(txtBalance);
+    	txtBalance.setColumns(10);
 
-        JLabel lblMonthlySavings = new JLabel("Monthly Savings:");
-        lblMonthlySavings.setBounds(280, 83, 96, 13);
-        mainMenuPanel.add(lblMonthlySavings);
+    	JLabel lblMonthlySavings = new JLabel("Monthly Savings:");
+    	lblMonthlySavings.setBounds(280, 83, 96, 13);
+    	mainMenuPanel.add(lblMonthlySavings);
 
-        txtMonthlySavings = new JTextField();
-        txtMonthlySavings.setEditable(false);
-        txtMonthlySavings.setBounds(280, 97, 96, 19);
-        mainMenuPanel.add(txtMonthlySavings);
-        txtMonthlySavings.setColumns(10);
+    	txtMonthlySavings = new JTextField();
+    	txtMonthlySavings.setEditable(false);
+    	txtMonthlySavings.setBounds(280, 97, 96, 19);
+    	mainMenuPanel.add(txtMonthlySavings);
+    	txtMonthlySavings.setColumns(10);
 
-        JLabel lblAddExpense = new JLabel("Add Expense:");
-        lblAddExpense.setBounds(78, 145, 108, 13);
-        mainMenuPanel.add(lblAddExpense);
+    	JLabel lblAddExpense = new JLabel("Add Expense:");
+    	lblAddExpense.setBounds(78, 145, 108, 13);
+    	mainMenuPanel.add(lblAddExpense);
 
-        JLabel lblExpenseSource = new JLabel("Source:");
-        lblExpenseSource.setBounds(22, 168, 84, 13);
-        mainMenuPanel.add(lblExpenseSource);
+    	JLabel lblExpenseSource = new JLabel("Source:");
+    	lblExpenseSource.setBounds(30, 168, 84, 13);
+    	mainMenuPanel.add(lblExpenseSource);
 
-        txtExpenceSource = new JTextField();
-        txtExpenceSource.setBounds(116, 165, 96, 19);
-        mainMenuPanel.add(txtExpenceSource);
-        txtExpenceSource.setColumns(10);
+    	txtExpenceSource = new JTextField();
+    	txtExpenceSource.setBounds(116, 165, 96, 19);
+    	mainMenuPanel.add(txtExpenceSource);
+    	txtExpenceSource.setColumns(10);
 
-        JLabel lblExpenseAmount = new JLabel("Amount:         $");
-        lblExpenseAmount.setBounds(22, 221, 96, 13);
-        mainMenuPanel.add(lblExpenseAmount);
+    	JLabel lblExpenseAmount = new JLabel("Amount:          $");
+    	lblExpenseAmount.setBounds(30, 221, 96, 13);
+    	mainMenuPanel.add(lblExpenseAmount);
 
-        txtExpenseAmount = new JTextField();
-        txtExpenseAmount.setBounds(116, 218, 96, 19);
-        mainMenuPanel.add(txtExpenseAmount);
-        txtExpenseAmount.setColumns(10);
+    	txtExpenseAmount = new JTextField();
+    	txtExpenseAmount.setBounds(116, 218, 96, 19);
+    	mainMenuPanel.add(txtExpenseAmount);
+    	txtExpenseAmount.setColumns(10);
 
-        JLabel lblExpenseYearlyFrequency = new JLabel("Yearly Frequency:");
-        lblExpenseYearlyFrequency.setBounds(22, 266, 96, 13);
-        mainMenuPanel.add(lblExpenseYearlyFrequency);
+    	JLabel lblExpenseYearlyFrequency = new JLabel("Yearly Frequency:");
+    	lblExpenseYearlyFrequency.setBounds(10, 266, 115, 13);
+    	mainMenuPanel.add(lblExpenseYearlyFrequency);
 
-        txtExpenseYearlyFrequency = new JTextField();
-        txtExpenseYearlyFrequency.setBounds(116, 263, 96, 19);
-        mainMenuPanel.add(txtExpenseYearlyFrequency);
-        txtExpenseYearlyFrequency.setColumns(10);
+    	txtExpenseYearlyFrequency = new JTextField();
+    	txtExpenseYearlyFrequency.setBounds(116, 263, 96, 19);
+    	mainMenuPanel.add(txtExpenseYearlyFrequency);
+    	txtExpenseYearlyFrequency.setColumns(10);
 
-        JButton btnAddExpense = new JButton("Add");
-        btnAddExpense.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+    	JButton btnAddExpense = new JButton("Add");
+    	btnAddExpense.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
 
-                String source = txtExpenceSource.getText();
-                double amount = Double.parseDouble(txtExpenseAmount.getText());
-                int Yearly = Integer.parseInt(txtExpenseYearlyFrequency.getText());
+    			String source = txtExpenceSource.getText();
+    			double amount = Double.parseDouble(txtExpenseAmount.getText());
+    			int Yearly = Integer.parseInt(txtExpenseYearlyFrequency.getText());
 
-                expenserCalulator.addExpense(getUserObject(), source, amount, Yearly);
-                System.out.println(getUserObject().toString());
+    			expenserCalulator.addExpense(getUserObject(), source, amount, Yearly);
+    			System.out.println(getUserObject().toString());
 
-                UpdateBalance();
-                UpdateSavings();
-            }
-        });
-        btnAddExpense.setBounds(71, 289, 85, 21);
-        mainMenuPanel.add(btnAddExpense);
+    			UpdateBalance();
+    			UpdateSavings();
+    		}
+    	});
+    	btnAddExpense.setBounds(71, 289, 85, 21);
+    	mainMenuPanel.add(btnAddExpense);
 
-        JLabel lblAddIncome = new JLabel("Add Income:");
-        lblAddIncome.setBounds(335, 145, 108, 13);
-        mainMenuPanel.add(lblAddIncome);
+    	JLabel lblAddIncome = new JLabel("Add Income:");
+    	lblAddIncome.setBounds(335, 145, 108, 13);
+    	mainMenuPanel.add(lblAddIncome);
 
-        JLabel lblIncomeSource = new JLabel("Source:");
-        lblIncomeSource.setBounds(280, 168, 84, 13);
-        mainMenuPanel.add(lblIncomeSource);
+    	JLabel lblIncomeSource = new JLabel("Source:");
+    	lblIncomeSource.setBounds(280, 168, 84, 13);
+    	mainMenuPanel.add(lblIncomeSource);
 
-        txtIncomeSource = new JTextField();
-        txtIncomeSource.setBounds(374, 165, 96, 19);
-        mainMenuPanel.add(txtIncomeSource);
-        txtIncomeSource.setColumns(10);
+    	txtIncomeSource = new JTextField();
+    	txtIncomeSource.setBounds(374, 165, 96, 19);
+    	mainMenuPanel.add(txtIncomeSource);
+    	txtIncomeSource.setColumns(10);
 
-        JLabel lblIncomeAmount = new JLabel("Amount:         $");
-        lblIncomeAmount.setBounds(280, 221, 96, 13);
-        mainMenuPanel.add(lblIncomeAmount);
+    	JLabel lblIncomeAmount = new JLabel("Amount:            $");
+    	lblIncomeAmount.setBounds(280, 221, 96, 13);
+    	mainMenuPanel.add(lblIncomeAmount);
 
-        txtIncomeAmount = new JTextField();
-        txtIncomeAmount.setBounds(374, 218, 96, 19);
-        mainMenuPanel.add(txtIncomeAmount);
-        txtIncomeAmount.setColumns(10);
+    	txtIncomeAmount = new JTextField();
+    	txtIncomeAmount.setBounds(374, 218, 96, 19);
+    	mainMenuPanel.add(txtIncomeAmount);
+    	txtIncomeAmount.setColumns(10);
 
-        JLabel lblIncomeMonth = new JLabel("Month:");
-        lblIncomeMonth.setBounds(280, 266, 96, 13);
-        mainMenuPanel.add(lblIncomeMonth);
+    	JLabel lblIncomeMonth = new JLabel("Month:");
+    	lblIncomeMonth.setBounds(280, 266, 96, 13);
+    	mainMenuPanel.add(lblIncomeMonth);
 
-        txtIncomeMonth = new JTextField();
-        txtIncomeMonth.setBounds(374, 263, 96, 19);
-        mainMenuPanel.add(txtIncomeMonth);
-        txtIncomeMonth.setColumns(10);
+    	txtIncomeMonth = new JTextField();
+    	txtIncomeMonth.setBounds(374, 263, 96, 19);
+    	mainMenuPanel.add(txtIncomeMonth);
+    	txtIncomeMonth.setColumns(10);
 
-        JButton btnAddIncome = new JButton("Add");
-        btnAddIncome.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+    	JButton btnAddIncome = new JButton("Add");
+    	btnAddIncome.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
 
-                String source = txtIncomeSource.getText();
-                double amount = Double.parseDouble(txtIncomeAmount.getText());
-                String month = txtIncomeMonth.getText();
+    			String source = txtIncomeSource.getText();
+    			double amount = Double.parseDouble(txtIncomeAmount.getText());
+    			String month = txtIncomeMonth.getText();
 
-                expenserCalulator.addMonthlyIncome(getUserObject(), source, amount, month);
-                System.out.println(getUserObject().toString());
+    			expenserCalulator.addMonthlyIncome(getUserObject(), source, amount, month);
+    			System.out.println(getUserObject().toString());
 
-                UpdateBalance();
-                UpdateSavings();
-            }
-        });
-        btnAddIncome.setBounds(335, 289, 85, 21);
-        mainMenuPanel.add(btnAddIncome);
+    			UpdateBalance();
+    			UpdateSavings();
+    		}
+    	});
+    	btnAddIncome.setBounds(335, 289, 85, 21);
+    	mainMenuPanel.add(btnAddIncome);
 
-        JButton btnFinancialReport = new JButton("My Financial Report");
-        btnFinancialReport.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                User user = getUserObject();
-                if (user != null) {
-                    expenserCalulator.PrintFullreport(user);
-                } else {
-                    JOptionPane.showMessageDialog(null, "User Not Found!");
-                }
-            }
-        });
-        btnFinancialReport.setBounds(280, 42, 149, 31);
-        mainMenuPanel.add(btnFinancialReport);
+    	JButton btnFinancialReport = new JButton("My Financial Report");
+    	btnFinancialReport.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			User user = getUserObject();
+    			if (user != null) {
+    				expenserCalulator.PrintFullreport(user);
+    			} else {
+    				JOptionPane.showMessageDialog(null, "User Not Found!");
+    			}
+    		}
+    	});
+    	btnFinancialReport.setBounds(280, 42, 149, 31);
+    	mainMenuPanel.add(btnFinancialReport);
 
-        JButton btnExportCSV = new JButton("Export CSV");
-        btnExportCSV.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                User user = getUserObject();
-                if (user != null) {
-                    try {
-                        expenserCalulator.exportReportToCSV(user);
-                        JOptionPane.showMessageDialog(null, "Report exported as CSV!");
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(null, "Error exporting report: " + ex.getMessage());
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "User not found!");
-                }
-            }
-        });
 
-        btnExportCSV.setBounds(280, 10, 149, 31);
-        mainMenuPanel.add(btnExportCSV);
 
-        JButton btnLogout = new JButton("Logout");
-        btnLogout.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                CurrentUser = "";
-                showLoginPanel();
-            }
-        });
-        btnLogout.setBounds(199, 332, 96, 28);
-        mainMenuPanel.add(btnLogout);
+    	JButton btnLogout = new JButton("Logout");
+    	btnLogout.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			CurrentUser = "";
+    			showLoginPanel();
+    		}
+    	});
+    	btnLogout.setBounds(0, 332, 96, 28);
+    	mainMenuPanel.add(btnLogout);
 
-        String currencyList[] = { "USD", "CAD" };
-        JList<String> LstCurrency = new JList<String>(currencyList);
-        LstCurrency.setBounds(63, 37, 149, 36);
-        LstCurrency.setSelectedIndex(0);
-        mainMenuPanel.add(LstCurrency);
-        // here
-        LstCurrency.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    double inBalAmount = Double.parseDouble(txtBalance.getText());
-                    double inSaveAmount = Double.parseDouble(txtMonthlySavings.getText());
-                    int outBalAmount;
-                    int outSaveAmount;
-                    String name = LstCurrency.getSelectedValue();
+    	String currencyList[] = { "USD", "CAD" };
+    	JList<String> LstCurrency = new JList<String>(currencyList);
+    	LstCurrency.setBounds(63, 37, 149, 36);
+    	LstCurrency.setSelectedIndex(0);
+    	mainMenuPanel.add(LstCurrency);
+    	// here
+    	LstCurrency.addListSelectionListener(new ListSelectionListener() {
+    		@Override
+    		public void valueChanged(ListSelectionEvent e) {
+    			if (!e.getValueIsAdjusting()) {
+    				double inBalAmount = Double.parseDouble(txtBalance.getText());
+    				double inSaveAmount = Double.parseDouble(txtMonthlySavings.getText());
+    				int outBalAmount;
+    				int outSaveAmount;
+    				String name = LstCurrency.getSelectedValue();
 
-                    expenserCalulator.convertForeignCurrency(C, name);
+    				expenserCalulator.convertForeignCurrency(C, name);
 
-                    outBalAmount = (int) (inBalAmount * C.getRate());
-                    txtBalance.setText(String.valueOf(outBalAmount));
+    				outBalAmount = (int) (inBalAmount * C.getRate());
+    				txtBalance.setText(String.valueOf(outBalAmount));
 
-                    outSaveAmount = (int) (inSaveAmount * C.getRate());
-                    txtMonthlySavings.setText(String.valueOf(outSaveAmount));
-                }
-            }
-        });
+    				outSaveAmount = (int) (inSaveAmount * C.getRate());
+    				txtMonthlySavings.setText(String.valueOf(outSaveAmount));
+    			}
+    		}
+    	});
+    	
+    	JButton importIncomeFileButton	= new JButton("Import Income File");			// Used in mainPanel()
+    	JButton importExpenseFileButton = new JButton("Import Expense File");
+    	
+		// TODO Import File Button Action
+		importIncomeFileButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				importFile.showSaveDialog(null);
 
-        JLabel lblNewLabel_1 = new JLabel("Currency in use:");
-        lblNewLabel_1.setBounds(63, 14, 108, 13);
-        mainMenuPanel.add(lblNewLabel_1);
+				if (importFile.getSelectedFile() != null) {
+					expenserCalulator.loadIncomeFile(importFile.getSelectedFile().getAbsolutePath());
+				}
+			}
+		});
+
+		importExpenseFileButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				importFile.showSaveDialog(null);
+
+				if (importFile.getSelectedFile() != null) {
+					expenserCalulator.loadExpenseFile(importFile.getSelectedFile().getAbsolutePath());
+				}
+			}
+		});
+
+    	JLabel lblNewLabel_1 = new JLabel("Currency in use:");
+    	lblNewLabel_1.setBounds(63, 14, 108, 13);
+    	mainMenuPanel.add(lblNewLabel_1);
+
+    	// TODO ADDING BUTTON FOR REPORTS (INCOME, EXPENSE, AND SORT BY TYPE) 
+    	JButton reportsButton = new JButton("Report Page");
+    	reportsButton.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			showReportPagePanel();
+    		}
+    	});
+    	reportsButton.setBounds(100, 332, 125, 28); 
+    	mainMenuPanel.add(reportsButton);
+    	
+    	class NewFrame extends JFrame {
+    	    public NewFrame() {
+    	        // Set up the new frame
+    	        setSize(300, 200);
+    	        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    	    }
+    	}
+
+    	// TODO ADDING BUTTONS FOR IMPORTING AND EXPORTING REPORTS
+    	JButton importReportButton = new JButton("Import Report");
+    	importReportButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				NewFrame newFrame = new NewFrame();
+				newFrame.setTitle("Import Income File");
+				newFrame.add(importIncomeFileButton);
+				newFrame.setLocation(10,  10);
+				
+				NewFrame newFrame2 = new NewFrame();
+				newFrame2.setTitle("Import Expense File");
+				newFrame2.add(importExpenseFileButton);
+				newFrame2.setLocation(320, 10);
+				newFrame.setVisible(true);
+				newFrame2.setVisible(true);
+				
+			}
+    	});
+    	importReportButton.setBounds(230, 332, 125, 28); 
+    	mainMenuPanel.add(importReportButton);
+    	
+    	
+
+    	// TODO ADDING BUTTONS FOR IMPORTING AND EXPORTING REPORTS
+    	JButton exportReportButton = new JButton("Export Report");
+    	exportReportButton.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			JOptionPane.showMessageDialog(null,"This button does nothing, yet! Add file chooser Functionality");
+    		}
+    	});
+    	exportReportButton.setBounds(360, 332, 125, 28); 
+    	mainMenuPanel.add(exportReportButton);
+
+
     }
 
+
+    private void initializeReportPagePanel() {
+    	reportPagePanel = new JPanel();
+    	reportPagePanel.setBounds(43, 31, 550, 500);
+    	contentPane.add(reportPagePanel);
+    	reportPagePanel.setLayout(null);
+    	   	
+    	// Adding JTextfields
+    	JTextField filterInput = new JTextField();
+    	filterInput.setBounds(260, 0, 125, 20);
+    	reportPagePanel.add(filterInput);
+    	
+    	// Adding JList for Report Information 
+		JList<String> reportList = new JList<>(reportListModel);
+		reportList.setBounds(25, 30, 450, 400);
+		reportPagePanel.add(reportList);
+
+    	// Adding JButtons
+    	 JButton incomeReportButton = new JButton("Income Report");
+    	 incomeReportButton.addActionListener(new ActionListener() {
+         	public void actionPerformed(ActionEvent e) {
+         		JOptionPane.showMessageDialog(null,"This button does nothing, yet!");
+         		reportListModel.addElement("Hello There, I am testing this");
+         	}
+         });
+    	 incomeReportButton.setBounds(0, 0, 125, 20);
+    	 reportPagePanel.add(incomeReportButton);
+    	
+    	 JButton expenseReportButton = new JButton("Expense Report");
+    	 expenseReportButton.addActionListener(new ActionListener() {
+         	public void actionPerformed(ActionEvent e) {
+         		JOptionPane.showMessageDialog(null,"This button does nothing, yet!");
+         	}
+         });
+    	 expenseReportButton.setBounds(130, 0, 125, 20);
+    	 reportPagePanel.add(expenseReportButton);
+    	 
+    	 JButton filterButton = new JButton("Filter");
+    	 filterButton.addActionListener(new ActionListener() {
+         	public void actionPerformed(ActionEvent e) {
+         		JOptionPane.showMessageDialog(null,"This button does nothing, yet!");
+         	}
+         });
+    	 filterButton.setBounds(390, 0, 100, 20);
+    	 reportPagePanel.add(filterButton);
+    	 
+    	 JButton menuButton = new JButton("Main Menu");
+    	 menuButton.addActionListener(new ActionListener() {
+         	public void actionPerformed(ActionEvent e) {
+         		showMainMenuPanel();
+         	}
+         });
+    	 menuButton.setBounds(0, 435, 100, 20);
+    	 reportPagePanel.add(menuButton);
+    	
+
+
+    }
+    
+
     private void showLoginPanel() {
-        loginPanel.setVisible(true);
-        registerPanel.setVisible(false);
+    	loginPanel.setVisible(true);
+    	registerPanel.setVisible(false);
         mainMenuPanel.setVisible(false);
+        reportPagePanel.setVisible(false);
     }
 
     private void showRegisterPanel() {
         loginPanel.setVisible(false);
         registerPanel.setVisible(true);
         mainMenuPanel.setVisible(false);
+        reportPagePanel.setVisible(false);
+
     }
 
     private void showMainMenuPanel() {
         loginPanel.setVisible(false);
         registerPanel.setVisible(false);
         mainMenuPanel.setVisible(true);
+        reportPagePanel.setVisible(false);
         UpdateBalance();
         UpdateSavings();
+    }
+    
+    private void showReportPagePanel() {
+        loginPanel.setVisible(false);
+        registerPanel.setVisible(false);
+        mainMenuPanel.setVisible(false);
+        reportPagePanel.setVisible(true);
     }
 
     public void CreateUser(String username, String password) {

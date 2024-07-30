@@ -55,4 +55,5 @@ public class Wage {
 	    public String toString() {
 	        return "Wage [source=" + source + ", amount=" + amount + ", Month=" + Month + ", id=" + ID + "]";
 	    }
+
 }
