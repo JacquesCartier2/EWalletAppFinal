@@ -9,19 +9,26 @@ import javax.swing.JOptionPane;
 import java.time.LocalDate;
 
 public class ExpenseCalulator implements Expenser {
+	public Database database = null;
 	public EWalletApp gui;
 
 	@Override
 	public void addExpense(User user, String source, double amount, int yearlyfrequency) {
 		Expense expense = new Expense(source, amount, yearlyfrequency);
-
+		
+		database.AddExpense(expense, user);
+		int id = database.GetAvailableExpenseID(expense, user);
+		expense.setID(id);
 		user.addExpense(expense);
 	}
 
 	@Override
 	public void addMonthlyIncome(User user, String source, double amount, String month) {
 		Wage income = new Wage(source, amount, month);
-
+		
+		database.AddIncome(income, user);
+		int id = database.GetAvailableIncomeID(income, user);
+		income.setID(id);
 		user.addWage(income);
 	}
 

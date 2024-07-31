@@ -11,6 +11,14 @@ public class Expense {
 		this.amount = amount;
 		this.yearlyfrequency = yearlyfrequency;
 	}
+	
+	public Expense(String source, double amount, int yearlyfrequency, int id) {
+		super();
+		this.source = source;
+		this.amount = amount;
+		this.yearlyfrequency = yearlyfrequency;
+		this.ID = id;
+	}
 
 	public String getSource() {
 		return source;
@@ -36,8 +44,16 @@ public class Expense {
 		this.yearlyfrequency = yearlyfrequency;
 	}
 	
+	public int getID() {
+		return ID;
+	}
+	
+	public void setID(int id) {
+		this.ID = id;
+	}
+	
 	@Override
     public String toString() {
-        return "Expense [source=" + source + ", amount=" + amount + ", yearlyfrequency=" + yearlyfrequency + "]";
+        return "Expense [source=" + source + ", amount=" + amount + ", yearlyfrequency=" + yearlyfrequency + ", id=" + ID + "]";
     }
 }

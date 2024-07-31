@@ -11,6 +11,13 @@ public class Wage {
 		this.amount = amount;
 		Month = month;
 	}
+	public Wage(String source, double amount, String month, int id) {
+		super();
+		this.source = source;
+		this.amount = amount;
+		Month = month;
+		this.ID = id;
+	}
 
 	public String getSource() {
 		return source;
@@ -36,8 +43,17 @@ public class Wage {
 		Month = month;
 	}
 	
-	@Override
-	public String toString() {
-		return "Wage [source=" + source + ", amount=" + amount + ", Month=" + Month + "]";
+	public int getID() {
+		return ID;
 	}
+	
+	public void setID(int id) {
+		this.ID = id;
+	}
+	
+	 @Override
+	    public String toString() {
+	        return "Wage [source=" + source + ", amount=" + amount + ", Month=" + Month + ", id=" + ID + "]";
+	    }
+
 }
