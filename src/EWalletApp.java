@@ -1,8 +1,12 @@
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -48,6 +52,7 @@ public class EWalletApp extends JFrame {
     private JPanel registerPanel;
     private JPanel mainMenuPanel;
     private JPanel reportPagePanel;
+    private JPanel whenCanIBuyPanel;
     
     
     // Generates ReportListModel List for JList GUI use 
@@ -94,6 +99,7 @@ public class EWalletApp extends JFrame {
         initializeRegisterPanel();
         initializeMainMenuPanel();
         initializeReportPagePanel();
+        initializeWhenCanIBuyPanel();
 
         // Initially show the login panel
         showLoginPanel();
@@ -328,6 +334,16 @@ public class EWalletApp extends JFrame {
     	});
     	btnAddIncome.setBounds(335, 289, 85, 21);
     	mainMenuPanel.add(btnAddIncome);
+    	
+    	// ADDING BUTTON FOR WHENCANIBUY FUNCTIONALITY
+    	JButton whenCanIBuyButton = new JButton("When Can I Buy");
+    	whenCanIBuyButton.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			showWhenCanIBuyPanel();
+    		}
+    	});
+    	whenCanIBuyButton.setBounds(280, 10, 149, 31); 
+    	mainMenuPanel.add(whenCanIBuyButton);
 
     	JButton btnFinancialReport = new JButton("My Financial Report");
     	btnFinancialReport.addActionListener(new ActionListener() {
@@ -342,9 +358,7 @@ public class EWalletApp extends JFrame {
     	});
     	btnFinancialReport.setBounds(280, 42, 149, 31);
     	mainMenuPanel.add(btnFinancialReport);
-
-
-
+    	
     	JButton btnLogout = new JButton("Logout");
     	btnLogout.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
@@ -520,8 +534,82 @@ public class EWalletApp extends JFrame {
          });
     	 menuButton.setBounds(0, 435, 100, 20);
     	 reportPagePanel.add(menuButton);
+    }
+    
+    private void initializeWhenCanIBuyPanel() {
+    	// Creating Main whencanibuy panel
+    	whenCanIBuyPanel = new JPanel();
+    	whenCanIBuyPanel.setBounds(43, 31, 550, 400);
+    	contentPane.add(whenCanIBuyPanel);
+    	whenCanIBuyPanel.setLayout(new BorderLayout());
     	
+    	// Sub Panel for mainCenterWhenPanel, using Box layout
+    	JPanel mainCenterWhenPanel = new JPanel();
+    	mainCenterWhenPanel.setLayout(new BoxLayout(mainCenterWhenPanel, BoxLayout.Y_AXIS));
+    	
+    	// Sub Panel for mainEastWhenPanel, Using box Layout
+    	JPanel mainEastWhenPanel = new JPanel();
+    	mainEastWhenPanel.setLayout(new BoxLayout(mainEastWhenPanel, BoxLayout.Y_AXIS));
+    	
+    	// JLabels
+    	JLabel whenBuyItemLabel = new JLabel("Item:");
+    	JLabel whenBuyAmountLabel = new JLabel("Amount:");
+    	JLabel whenCanIBuyCalculatedLabel = new JLabel("Estimated months needed to save.");
+    	
+    	// JTextFields
+    	JTextField whenBuyItemField = new JTextField();
+    	JTextField whenBuyAmountField = new JTextField();
+    	
+    	// JButtons
+    	JButton whenCanIBuyCalculateButton = new JButton("Calculate");
+    	whenCanIBuyCalculateButton.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			int months; 		// Stores returned int value from expenserCalculator.whenCanIBuy
+    			String itemName = whenBuyItemField.getName();
+    			double amount = Double.parseDouble(whenBuyAmountField.getText());
+    			
+    			for (int i = 0; i < AllUsers.size(); i++) {
 
+    				User currentUser = AllUsers.get(i);
+
+    				if (currentUser.username.equals(txtLoginUserName.getText())) {
+    					
+    					months = expenserCalulator.whenCanIBuy(itemName, amount, currentUser);
+    					
+    					whenCanIBuyCalculatedLabel.setText("You will be able to purchase " + itemName + " in " + months + " month(s).");
+    				}
+    			}	
+    		}
+    	});
+    	
+    	JButton returnWhenButton = new JButton("Main Menu");
+    	returnWhenButton.addActionListener(new ActionListener() {
+          	public void actionPerformed(ActionEvent e) {
+          		showMainMenuPanel();
+          	}
+          });
+
+    	// Adding components to mainCenterWhenPanel
+    	mainCenterWhenPanel.add(Box.createVerticalStrut(20));
+    	mainCenterWhenPanel.add(whenBuyItemLabel);
+    	mainCenterWhenPanel.add(whenBuyItemField);
+    	mainCenterWhenPanel.add(whenBuyAmountLabel);
+    	mainCenterWhenPanel.add(whenBuyAmountField);
+    	mainCenterWhenPanel.add(Box.createVerticalStrut(20));
+    	mainCenterWhenPanel.add(whenCanIBuyCalculateButton);
+    	mainCenterWhenPanel.add(Box.createVerticalStrut(15));
+    	
+    	// Adding components to mainEastWhenPanel
+    	mainEastWhenPanel.add(Box.createVerticalStrut(50));
+    	mainEastWhenPanel.add(whenCanIBuyCalculatedLabel);
+    	mainEastWhenPanel.add(Box.createHorizontalStrut(60));
+    	
+    	// Adding components to mainWhenPanel
+    	whenCanIBuyPanel.add(mainEastWhenPanel, BorderLayout.EAST);
+    	whenCanIBuyPanel.add(mainCenterWhenPanel, BorderLayout.CENTER);
+    	whenCanIBuyPanel.add(returnWhenButton, BorderLayout.SOUTH);
+
+    	
 
     }
     
@@ -531,6 +619,7 @@ public class EWalletApp extends JFrame {
     	registerPanel.setVisible(false);
         mainMenuPanel.setVisible(false);
         reportPagePanel.setVisible(false);
+        whenCanIBuyPanel.setVisible(false);
     }
 
     private void showRegisterPanel() {
@@ -538,7 +627,7 @@ public class EWalletApp extends JFrame {
         registerPanel.setVisible(true);
         mainMenuPanel.setVisible(false);
         reportPagePanel.setVisible(false);
-
+        whenCanIBuyPanel.setVisible(false);
     }
 
     private void showMainMenuPanel() {
@@ -546,6 +635,7 @@ public class EWalletApp extends JFrame {
         registerPanel.setVisible(false);
         mainMenuPanel.setVisible(true);
         reportPagePanel.setVisible(false);
+        whenCanIBuyPanel.setVisible(false);
         UpdateBalance();
         UpdateSavings();
     }
@@ -555,7 +645,17 @@ public class EWalletApp extends JFrame {
         registerPanel.setVisible(false);
         mainMenuPanel.setVisible(false);
         reportPagePanel.setVisible(true);
+        whenCanIBuyPanel.setVisible(false);
     }
+    
+    private void showWhenCanIBuyPanel() {
+        loginPanel.setVisible(false);
+        registerPanel.setVisible(false);
+        mainMenuPanel.setVisible(false);
+        reportPagePanel.setVisible(false);
+        whenCanIBuyPanel.setVisible(true);
+    }
+	
 
     public void CreateUser(String username, String password) {
 
