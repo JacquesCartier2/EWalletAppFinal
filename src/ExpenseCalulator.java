@@ -3,6 +3,9 @@ import java.io.*;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -315,10 +318,11 @@ public class ExpenseCalulator implements Expenser {
 	}
 
 	public double updateMonthlySavings(User user) {
-		
 		double monthlyExpenses = 0;
 		double monthlyIncome = 0;
+		double monthlySavings = 0;
 		
+		// Gets all expense from user that is logged in 
 		ArrayList<Expense> listOfExpense = user.getExpenses();
         if (listOfExpense != null) {
             for (int expenseNum = 0; expenseNum < listOfExpense.size(); expenseNum++) {
@@ -326,25 +330,34 @@ public class ExpenseCalulator implements Expenser {
                 monthlyExpenses += (currentExpense.amount * currentExpense.yearlyfrequency) / 12;
             }
         }
-
+        
+        // Gets all Wages from user that is logged in
         ArrayList<Wage> listOfIncome = user.getWages();
         if (listOfIncome != null) {
             for (int incomeNum = 0; incomeNum < listOfIncome.size(); incomeNum++) {
                 Wage currentIncome = listOfIncome.get(incomeNum);
                 
+                // Gets Current Month from LocalDate Class 
                 LocalDate currentDate = LocalDate.now();
                 String currentMonth = currentDate.getMonth().toString();
                 
                 System.out.println(currentMonth);
                 
-                if (currentMonth.equals(currentIncome.Month)) {
+                if (currentMonth.equals(currentIncome.Month.toUpperCase())) {
                 	
                 	monthlyIncome += currentIncome.getAmount();
                 }  
             }
         }
-		
-		return monthlyIncome - monthlyExpenses;
+        
+        // Rounding to 2 decimal places for reflect currency      
+        monthlySavings =  monthlyIncome - monthlyExpenses;	
+        
+        BigDecimal bd = new BigDecimal(Double.toString(monthlySavings));
+        monthlySavings = (bd.setScale(2, RoundingMode.HALF_UP)).doubleValue();
+        		
+        
+		return monthlySavings;
 	}
 
 }

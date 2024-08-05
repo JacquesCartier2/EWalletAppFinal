@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Mon Aug 05 17:56:00 EDT 2024:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-0191-248a-c7d1-00000f184770 
+on database directory C:\Users\elgu4\SENG210_Final with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@61e4705b 
+Loaded from file:/C:/Apache/db-derby-10.17.1.0-bin/lib/derby.jar
+java.vendor=Eclipse Adoptium
+java.runtime.version=21.0.2+13-LTS
+user.dir=C:\Users\elgu4\git\EWalletAppFinal
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
