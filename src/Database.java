@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 //this class contains all code used to interact with the database. 
 public class Database {
-	private String connectionLink = "jdbc:derby:F:\\Program Files\\Apache Derby DB\\Databases\\SENG210_Final;create=false";
+	private String connectionLink = "jdbc:derby:C:\\Users\\Jerome and Phelix\\Final2024DB;create=true";
 	private static Connection connection = null; 
 	private static Statement statement = null;
 	
