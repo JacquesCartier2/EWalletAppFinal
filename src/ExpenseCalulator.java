@@ -373,7 +373,9 @@ public class ExpenseCalulator implements Expenser {
 				}
 				
 				//if all three data points work, add a new expense.
-				expenses.add(new Expense(source, amount, yearlyFrequency));
+				Expense exp = new Expense(source, amount, yearlyFrequency);
+				expenses.add(exp);
+				database.AddExpense(exp, userAtHand);
 			}
 			
 			br.close();
@@ -457,7 +459,9 @@ public class ExpenseCalulator implements Expenser {
 				month = splitLine[2];
 				
 				//if all three data points work, add a new expense.
-				incomes.add(new Wage(source, amount, month));
+				Wage inc = new Wage(source, amount, month);
+				incomes.add(inc);
+				database.AddIncome(inc, userAtHand);
 			}
 			
 			br.close();
