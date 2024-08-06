@@ -87,6 +87,13 @@ public class EWalletApp extends JFrame {
      * Create the frame.
      */
     public EWalletApp() {
+    	//connect to the database and get data.
+    	database.Connect();
+    	expenserCalulator.database = database;
+    	AllUsers = database.GetAllData();
+    	
+    	expenserCalulator.gui = this;
+    	
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 635, 527);
         contentPane = new JPanel();
@@ -107,11 +114,6 @@ public class EWalletApp extends JFrame {
     }
 
     private void initializeLoginPanel() {
-    	//connect to the database and get data.
-    	database.Connect();
-    	expenserCalulator.database = database;
-    	AllUsers = database.GetAllData();
-
     	loginPanel = new JPanel();
     	loginPanel.setBounds(43, 31, 527, 406);
     	contentPane.add(loginPanel);
@@ -461,7 +463,10 @@ public class EWalletApp extends JFrame {
     	JButton exportReportButton = new JButton("Export Report");
     	exportReportButton.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
+    			expenserCalulator.filePath = "F:/";
+    			expenserCalulator.kindOfReport = "Expense";
     			expenserCalulator.exportReport("expense");
+    			expenserCalulator.kindOfReport = "Income";
     			expenserCalulator.exportReport("income");
     			JOptionPane.showMessageDialog(null,"Reports Exported!");
     		}

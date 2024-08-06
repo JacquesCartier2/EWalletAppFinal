@@ -222,6 +222,13 @@ public class ExpenseCalulator implements Expenser {
 	public void exportReport(String reportTitle) {
 		//stores the path and name of the file to be created.
 		String fullFilepath = filePath + reportTitle + ".csv";
+		User userAtHand = null;
+		for(User user : gui.AllUsers) {
+			if(user.username.equals(gui.CurrentUser)){
+				userAtHand = user;
+				break;
+			}
+		}
 		
 		//create the file in the destination. 
 		File file = new File(fullFilepath);
@@ -299,7 +306,13 @@ public class ExpenseCalulator implements Expenser {
 	@Override
 	public boolean loadExpenseFile(String filePath) {
 		File loadedFile = null;
-		
+		User userAtHand = null;
+		for(User user : gui.AllUsers) {
+			if(user.username.equals(gui.CurrentUser)){
+				userAtHand = user;
+				break;
+			}
+		}
 		
 		try {
 			loadedFile = new File(filePath);
@@ -384,7 +397,13 @@ public class ExpenseCalulator implements Expenser {
 	@Override
 	public boolean loadIncomeFile(String filePath) {
 		File loadedFile = null;
-		
+		User userAtHand = null;
+		for(User user : gui.AllUsers) {
+			if(user.username.equals(gui.CurrentUser)){
+				userAtHand = user;
+				break;
+			}
+		}
 		
 		try {
 			loadedFile = new File(filePath);
