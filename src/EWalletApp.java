@@ -234,7 +234,7 @@ public class EWalletApp extends JFrame {
     	txtBalance.setColumns(10);
 
     	JLabel lblMonthlySavings = new JLabel("Monthly Savings:");
-    	lblMonthlySavings.setBounds(280, 83, 96, 13);
+    	lblMonthlySavings.setBounds(280, 83, 150, 13);
     	mainMenuPanel.add(lblMonthlySavings);
 
     	txtMonthlySavings = new JTextField();
@@ -266,7 +266,7 @@ public class EWalletApp extends JFrame {
     	txtExpenseAmount.setColumns(10);
 
     	JLabel lblExpenseYearlyFrequency = new JLabel("Yearly Frequency:");
-    	lblExpenseYearlyFrequency.setBounds(10, 266, 115, 13);
+    	lblExpenseYearlyFrequency.setBounds(5, 266, 115, 13);
     	mainMenuPanel.add(lblExpenseYearlyFrequency);
 
     	txtExpenseYearlyFrequency = new JTextField();
@@ -718,7 +718,8 @@ public class EWalletApp extends JFrame {
                     }
                 }
 
-                txtBalance.setText(String.valueOf(incomeTotal - expensesTotal));
+               // txtBalance.setText(String.valueOf(incomeTotal - expensesTotal));
+                txtBalance.setText(String.format("%.2f", incomeTotal - expensesTotal));
                 break; // Exit the loop once the current user is found
             }
         }
@@ -730,7 +731,8 @@ public class EWalletApp extends JFrame {
             User currentUser = AllUsers.get(i);
             if (currentUser.username.equals(CurrentUser)) {
 
-                txtMonthlySavings.setText(String.valueOf(expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
+            	txtMonthlySavings.setText(String.format("%.2f", expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
+            	//txtMonthlySavings.setText(String.valueOf(expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
                 break; // Exit the loop once the current user is found
             }
         }
