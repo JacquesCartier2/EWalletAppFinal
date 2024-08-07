@@ -463,9 +463,13 @@ public class ExpenseCalulator implements Expenser {
 	}
 
 	@Override
-	public int whenCanIBuy(String itemname, double price) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int whenCanIBuy(String itemname, double price, User user) {
+				
+		if (user.monthlysavings < 0) {
+			return Integer.MAX_VALUE; 	// Indicates that savings is not possible with current montly savings
+		}
+		
+		return (int) Math.ceil(price / user.monthlysavings);
 	}
 
 	public double updateMonthlySavings(User user) {
@@ -506,7 +510,8 @@ public class ExpenseCalulator implements Expenser {
         
         BigDecimal bd = new BigDecimal(Double.toString(monthlySavings));
         monthlySavings = (bd.setScale(2, RoundingMode.HALF_UP)).doubleValue();
-        		
+        
+        user.monthlysavings = monthlySavings; // Fix for monthly savings on user not updating
         
 		return monthlySavings;
 	}
