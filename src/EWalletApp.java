@@ -1,6 +1,9 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -14,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
 import java.io.IOException;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
@@ -103,6 +108,7 @@ public class EWalletApp extends JFrame {
 
         // Initially show the login panel
         showLoginPanel();
+      
         // showMainMenuPanel();
         // showReportPagePanel();
 
@@ -537,81 +543,88 @@ public class EWalletApp extends JFrame {
     }
     
     private void initializeWhenCanIBuyPanel() {
-    	// Creating Main whencanibuy panel
-    	whenCanIBuyPanel = new JPanel();
-    	whenCanIBuyPanel.setBounds(43, 31, 550, 400);
-    	contentPane.add(whenCanIBuyPanel);
-    	whenCanIBuyPanel.setLayout(new BorderLayout());
-    	
-    	// Sub Panel for mainCenterWhenPanel, using Box layout
-    	JPanel mainCenterWhenPanel = new JPanel();
-    	mainCenterWhenPanel.setLayout(new BoxLayout(mainCenterWhenPanel, BoxLayout.Y_AXIS));
-    	
-    	// Sub Panel for mainEastWhenPanel, Using box Layout
-    	JPanel mainEastWhenPanel = new JPanel();
-    	mainEastWhenPanel.setLayout(new BoxLayout(mainEastWhenPanel, BoxLayout.Y_AXIS));
-    	
-    	// JLabels
-    	JLabel whenBuyItemLabel = new JLabel("Item:");
-    	JLabel whenBuyAmountLabel = new JLabel("Amount:");
-    	JLabel whenCanIBuyCalculatedLabel = new JLabel("Estimated months needed to save.");
-    	
-    	// JTextFields
-    	JTextField whenBuyItemField = new JTextField();
-    	JTextField whenBuyAmountField = new JTextField();
-    	
-    	// JButtons
-    	JButton whenCanIBuyCalculateButton = new JButton("Calculate");
-    	whenCanIBuyCalculateButton.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			int months; 		// Stores returned int value from expenserCalculator.whenCanIBuy
-    			String itemName = whenBuyItemField.getName();
-    			double amount = Double.parseDouble(whenBuyAmountField.getText());
-    			
-    			for (int i = 0; i < AllUsers.size(); i++) {
+        // Creating Main whenCanIBuy panel
+        whenCanIBuyPanel = new JPanel();
+        whenCanIBuyPanel.setBounds(43, 31, 550, 400);
+        contentPane.add(whenCanIBuyPanel);
+        whenCanIBuyPanel.setLayout(new BorderLayout(10, 10));
 
-    				User currentUser = AllUsers.get(i);
+        // Sub Panel for mainCenterWhenPanel, using GridBagLayout
+        JPanel mainCenterWhenPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-    				if (currentUser.username.equals(txtLoginUserName.getText())) {
-    					
-    					months = expenserCalulator.whenCanIBuy(itemName, amount, currentUser);
-    					
-    					whenCanIBuyCalculatedLabel.setText("You will be able to purchase " + itemName + " in " + months + " month(s).");
-    				}
-    			}	
-    		}
-    	});
-    	
-    	JButton returnWhenButton = new JButton("Main Menu");
-    	returnWhenButton.addActionListener(new ActionListener() {
-          	public void actionPerformed(ActionEvent e) {
-          		showMainMenuPanel();
-          	}
-          });
+        // Sub Panel for mainEastWhenPanel, using GridBagLayout
+        JPanel mainEastWhenPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbcEast = new GridBagConstraints();
+        gbcEast.insets = new Insets(10, 10, 10, 10);
+        gbcEast.fill = GridBagConstraints.HORIZONTAL;
 
-    	// Adding components to mainCenterWhenPanel
-    	mainCenterWhenPanel.add(Box.createVerticalStrut(20));
-    	mainCenterWhenPanel.add(whenBuyItemLabel);
-    	mainCenterWhenPanel.add(whenBuyItemField);
-    	mainCenterWhenPanel.add(whenBuyAmountLabel);
-    	mainCenterWhenPanel.add(whenBuyAmountField);
-    	mainCenterWhenPanel.add(Box.createVerticalStrut(20));
-    	mainCenterWhenPanel.add(whenCanIBuyCalculateButton);
-    	mainCenterWhenPanel.add(Box.createVerticalStrut(15));
-    	
-    	// Adding components to mainEastWhenPanel
-    	mainEastWhenPanel.add(Box.createVerticalStrut(50));
-    	mainEastWhenPanel.add(whenCanIBuyCalculatedLabel);
-    	mainEastWhenPanel.add(Box.createHorizontalStrut(60));
-    	
-    	// Adding components to mainWhenPanel
-    	whenCanIBuyPanel.add(mainEastWhenPanel, BorderLayout.EAST);
-    	whenCanIBuyPanel.add(mainCenterWhenPanel, BorderLayout.CENTER);
-    	whenCanIBuyPanel.add(returnWhenButton, BorderLayout.SOUTH);
+        // JLabels
+        JLabel whenBuyItemLabel = new JLabel("Item:");
+        JLabel whenBuyAmountLabel = new JLabel("Amount:");
+        JLabel whenCanIBuyCalculatedLabel = new JLabel("Estimated months needed to save.");
+        whenCanIBuyCalculatedLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-    	
+        // JTextFields
+        JTextField whenBuyItemField = new JTextField(20);
+        JTextField whenBuyAmountField = new JTextField(20);
 
+        // JButtons
+        JButton whenCanIBuyCalculateButton = new JButton("Calculate");
+        whenCanIBuyCalculateButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int months; // Stores returned int value from expenserCalculator.whenCanIBuy
+                String itemName = whenBuyItemField.getText();
+                double amount = Double.parseDouble(whenBuyAmountField.getText());
+
+                for (int i = 0; i < AllUsers.size(); i++) {
+                    User currentUser = AllUsers.get(i);
+
+                    if (currentUser.username.equals(txtLoginUserName.getText())) {
+                        months = expenserCalulator.whenCanIBuy(itemName, amount, currentUser);
+                        whenCanIBuyCalculatedLabel.setText("You will be able to purchase " + itemName + " in " + months + " month(s).");
+                    }
+                }
+            }
+        });
+
+        JButton returnWhenButton = new JButton("Main Menu");
+        returnWhenButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showMainMenuPanel();
+            }
+        });
+
+        // Adding components to mainCenterWhenPanel
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        mainCenterWhenPanel.add(whenBuyItemLabel, gbc);
+        gbc.gridx = 1;
+        mainCenterWhenPanel.add(whenBuyItemField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        mainCenterWhenPanel.add(whenBuyAmountLabel, gbc);
+        gbc.gridx = 1;
+        mainCenterWhenPanel.add(whenBuyAmountField, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        mainCenterWhenPanel.add(whenCanIBuyCalculateButton, gbc);
+
+        // Adding components to mainEastWhenPanel
+        gbcEast.gridx = 0;
+        gbcEast.gridy = 0;
+        mainEastWhenPanel.add(whenCanIBuyCalculatedLabel, gbcEast);
+
+        // Adding components to whenCanIBuyPanel
+        whenCanIBuyPanel.add(mainEastWhenPanel, BorderLayout.EAST);
+        whenCanIBuyPanel.add(mainCenterWhenPanel, BorderLayout.CENTER);
+        whenCanIBuyPanel.add(returnWhenButton, BorderLayout.SOUTH);
     }
+
     
 
     private void showLoginPanel() {
