@@ -1,8 +1,15 @@
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -10,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
 import java.io.IOException;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
@@ -49,6 +58,7 @@ public class EWalletApp extends JFrame {
     private JPanel registerPanel;
     private JPanel mainMenuPanel;
     private JPanel reportPagePanel;
+    private JPanel whenCanIBuyPanel;
     
     public int i; //expense/income trigger
     
@@ -104,9 +114,11 @@ public class EWalletApp extends JFrame {
         initializeRegisterPanel();
         initializeMainMenuPanel();
         initializeReportPagePanel();
+        initializeWhenCanIBuyPanel();
 
         // Initially show the login panel
         showLoginPanel();
+      
         // showMainMenuPanel();
         // showReportPagePanel();
 
@@ -227,7 +239,7 @@ public class EWalletApp extends JFrame {
     	txtBalance.setColumns(10);
 
     	JLabel lblMonthlySavings = new JLabel("Monthly Savings:");
-    	lblMonthlySavings.setBounds(280, 83, 96, 13);
+    	lblMonthlySavings.setBounds(280, 83, 150, 13);
     	mainMenuPanel.add(lblMonthlySavings);
 
     	txtMonthlySavings = new JTextField();
@@ -249,7 +261,7 @@ public class EWalletApp extends JFrame {
     	mainMenuPanel.add(txtExpenceSource);
     	txtExpenceSource.setColumns(10);
 
-    	JLabel lblExpenseAmount = new JLabel("Amount:          $");
+    	JLabel lblExpenseAmount = new JLabel("Amount:      $");
     	lblExpenseAmount.setBounds(30, 221, 96, 13);
     	mainMenuPanel.add(lblExpenseAmount);
 
@@ -259,7 +271,7 @@ public class EWalletApp extends JFrame {
     	txtExpenseAmount.setColumns(10);
 
     	JLabel lblExpenseYearlyFrequency = new JLabel("Yearly Frequency:");
-    	lblExpenseYearlyFrequency.setBounds(10, 266, 115, 13);
+    	lblExpenseYearlyFrequency.setBounds(5, 266, 115, 13);
     	mainMenuPanel.add(lblExpenseYearlyFrequency);
 
     	txtExpenseYearlyFrequency = new JTextField();
@@ -298,7 +310,7 @@ public class EWalletApp extends JFrame {
     	mainMenuPanel.add(txtIncomeSource);
     	txtIncomeSource.setColumns(10);
 
-    	JLabel lblIncomeAmount = new JLabel("Amount:            $");
+    	JLabel lblIncomeAmount = new JLabel("Amount:        $");
     	lblIncomeAmount.setBounds(280, 221, 96, 13);
     	mainMenuPanel.add(lblIncomeAmount);
 
@@ -333,6 +345,16 @@ public class EWalletApp extends JFrame {
     	});
     	btnAddIncome.setBounds(335, 289, 85, 21);
     	mainMenuPanel.add(btnAddIncome);
+    	
+    	// ADDING BUTTON FOR WHENCANIBUY FUNCTIONALITY
+    	JButton whenCanIBuyButton = new JButton("When Can I Buy");
+    	whenCanIBuyButton.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			showWhenCanIBuyPanel();
+    		}
+    	});
+    	whenCanIBuyButton.setBounds(280, 10, 149, 31); 
+    	mainMenuPanel.add(whenCanIBuyButton);
 
     	JButton btnFinancialReport = new JButton("My Financial Report");
     	btnFinancialReport.addActionListener(new ActionListener() {
@@ -347,9 +369,7 @@ public class EWalletApp extends JFrame {
     	});
     	btnFinancialReport.setBounds(280, 42, 149, 31);
     	mainMenuPanel.add(btnFinancialReport);
-
-
-
+    	
     	JButton btnLogout = new JButton("Logout");
     	btnLogout.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
@@ -538,10 +558,91 @@ public class EWalletApp extends JFrame {
          });
     	 menuButton.setBounds(0, 435, 100, 20);
     	 reportPagePanel.add(menuButton);
-    	
-
-
     }
+    
+    private void initializeWhenCanIBuyPanel() {
+        // Creating Main whenCanIBuy panel
+        whenCanIBuyPanel = new JPanel();
+        whenCanIBuyPanel.setBounds(43, 31, 550, 400);
+        contentPane.add(whenCanIBuyPanel);
+        whenCanIBuyPanel.setLayout(new BorderLayout(10, 10));
+
+        // Sub Panel for mainCenterWhenPanel, using GridBagLayout
+        JPanel mainCenterWhenPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Sub Panel for mainEastWhenPanel, using GridBagLayout
+        JPanel mainEastWhenPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbcEast = new GridBagConstraints();
+        gbcEast.insets = new Insets(10, 10, 10, 10);
+        gbcEast.fill = GridBagConstraints.HORIZONTAL;
+
+        // JLabels
+        JLabel whenBuyItemLabel = new JLabel("Item:");
+        JLabel whenBuyAmountLabel = new JLabel("Amount:");
+        JLabel whenCanIBuyCalculatedLabel = new JLabel("Estimated months needed to save.");
+        whenCanIBuyCalculatedLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // JTextFields
+        JTextField whenBuyItemField = new JTextField(20);
+        JTextField whenBuyAmountField = new JTextField(20);
+
+        // JButtons
+        JButton whenCanIBuyCalculateButton = new JButton("Calculate");
+        whenCanIBuyCalculateButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int months; // Stores returned int value from expenserCalculator.whenCanIBuy
+                String itemName = whenBuyItemField.getText();
+                double amount = Double.parseDouble(whenBuyAmountField.getText());
+
+                for (int i = 0; i < AllUsers.size(); i++) {
+                    User currentUser = AllUsers.get(i);
+
+                    if (currentUser.username.equals(txtLoginUserName.getText())) {
+                        months = expenserCalulator.whenCanIBuy(itemName, amount, currentUser);
+                        whenCanIBuyCalculatedLabel.setText("You will be able to purchase " + itemName + " in " + months + " month(s).");
+                    }
+                }
+            }
+        });
+
+        JButton returnWhenButton = new JButton("Main Menu");
+        returnWhenButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showMainMenuPanel();
+            }
+        });
+
+        // Adding components to mainCenterWhenPanel
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        mainCenterWhenPanel.add(whenBuyItemLabel, gbc);
+        gbc.gridx = 1;
+        mainCenterWhenPanel.add(whenBuyItemField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        mainCenterWhenPanel.add(whenBuyAmountLabel, gbc);
+        gbc.gridx = 1;
+        mainCenterWhenPanel.add(whenBuyAmountField, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        mainCenterWhenPanel.add(whenCanIBuyCalculateButton, gbc);
+
+        // Adding components to mainEastWhenPanel
+        gbcEast.gridx = 0;
+        gbcEast.gridy = 0;
+        mainEastWhenPanel.add(whenCanIBuyCalculatedLabel, gbcEast);
+
+        // Adding components to whenCanIBuyPanel
+        whenCanIBuyPanel.add(mainEastWhenPanel, BorderLayout.EAST);
+        whenCanIBuyPanel.add(mainCenterWhenPanel, BorderLayout.CENTER);
+        whenCanIBuyPanel.add(returnWhenButton, BorderLayout.SOUTH);
+    }
+
     
 
     private void showLoginPanel() {
@@ -549,6 +650,7 @@ public class EWalletApp extends JFrame {
     	registerPanel.setVisible(false);
         mainMenuPanel.setVisible(false);
         reportPagePanel.setVisible(false);
+        whenCanIBuyPanel.setVisible(false);
     }
 
     private void showRegisterPanel() {
@@ -556,7 +658,7 @@ public class EWalletApp extends JFrame {
         registerPanel.setVisible(true);
         mainMenuPanel.setVisible(false);
         reportPagePanel.setVisible(false);
-
+        whenCanIBuyPanel.setVisible(false);
     }
 
     private void showMainMenuPanel() {
@@ -564,6 +666,7 @@ public class EWalletApp extends JFrame {
         registerPanel.setVisible(false);
         mainMenuPanel.setVisible(true);
         reportPagePanel.setVisible(false);
+        whenCanIBuyPanel.setVisible(false);
         UpdateBalance();
         UpdateSavings();
     }
@@ -573,7 +676,17 @@ public class EWalletApp extends JFrame {
         registerPanel.setVisible(false);
         mainMenuPanel.setVisible(false);
         reportPagePanel.setVisible(true);
+        whenCanIBuyPanel.setVisible(false);
     }
+    
+    private void showWhenCanIBuyPanel() {
+        loginPanel.setVisible(false);
+        registerPanel.setVisible(false);
+        mainMenuPanel.setVisible(false);
+        reportPagePanel.setVisible(false);
+        whenCanIBuyPanel.setVisible(true);
+    }
+	
 
     public void CreateUser(String username, String password) {
 
@@ -623,7 +736,8 @@ public class EWalletApp extends JFrame {
                     }
                 }
 
-                txtBalance.setText("$" + String.valueOf(incomeTotal - expensesTotal));
+               // txtBalance.setText(String.valueOf(incomeTotal - expensesTotal));
+                txtBalance.setText(String.format("%.2f", incomeTotal - expensesTotal));
                 break; // Exit the loop once the current user is found
             }
         }
@@ -635,7 +749,8 @@ public class EWalletApp extends JFrame {
             User currentUser = AllUsers.get(i);
             if (currentUser.username.equals(CurrentUser)) {
 
-                txtMonthlySavings.setText("$" + String.valueOf(expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
+            	txtMonthlySavings.setText(String.format("%.2f", expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
+            	//txtMonthlySavings.setText(String.valueOf(expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
                 break; // Exit the loop once the current user is found
             }
         }
