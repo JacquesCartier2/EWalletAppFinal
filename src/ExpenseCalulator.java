@@ -7,12 +7,17 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
 import java.time.LocalDate;
 
 public class ExpenseCalulator implements Expenser {
 	public Database database = null;
+	public String filePath; //the filepath where new files are created. 
+	public String reportType;
+	public String kindOfReport;
 	public EWalletApp gui;
 
 	@Override
@@ -96,27 +101,97 @@ public class ExpenseCalulator implements Expenser {
 	}
 
 	@Override
+	// As a user I would like to view a detailed report of all expenses, and summary
+	// information for expenses
 	public void PrintExpensereport() {
-		// TODO Auto-generated method stub
+		
+		User userAtHand = EWalletApp.getUserObject();
+		EWalletApp.reportListModel.clear();
+		double totalExpenses = 0;
 
+		String rep1 = ("Creating Expense report...");
+		EWalletApp.reportListModel.addElement(rep1);
+		String lineBreak = "";
+		EWalletApp.reportListModel.addElement(lineBreak);
+
+		int i;
+		// print expenses
+		String rep2 = ("Expenses:");
+		EWalletApp.reportListModel.addElement(rep2);
+		for (i = 0; i < userAtHand.getExpenses().size(); i++) {
+			String rep3 = ("Source: " + userAtHand.getExpenses().get(i).source + " Amount: "
+					+ userAtHand.getExpenses().get(i).amount + " Frequency (per year): "
+					+ userAtHand.getExpenses().get(i).yearlyfrequency);
+			EWalletApp.reportListModel.addElement(rep3);
+			// collect total expenses
+			totalExpenses = totalExpenses
+					+ ((userAtHand.getExpenses().get(i).amount) * (userAtHand.getExpenses().get(i).yearlyfrequency));
+		}
+		System.out.println();
+
+		String rep20 = ("Total Expenses: " + totalExpenses);
+		EWalletApp.reportListModel.addElement(rep20);
 	}
 
 	@Override
+	//As  a user I would like to view a detailed report of all income, and summary information for income
 	public void PrintIncomereport() {
-		// TODO Auto-generated method stu
-
+		
+		User userAtHand = EWalletApp.getUserObject();
+		
+		String incomeInfo; 		// Used to store Source, amount, Month
+	
+		// Clears Current List information and prints updates
+		EWalletApp.reportListModel.clear();
+		
+		// Gets information for Report Income
+		for (Wage wage: userAtHand.getWages()) {
+			incomeInfo = "Source: " + wage.source + "    Amount: " + wage.amount + "    Month: " + wage.Month;
+			EWalletApp.reportListModel.addElement(incomeInfo);
+		}
 	}
 
 	@Override
-	public void PrintIncomereportbyTpe() {
-		// TODO Auto-generated method stub
+	//As  a user I would like to view a detailed report of income of a certain type, and summary information for income
+	public void PrintIncomereportbyTpe(){
+		
+		User userAtHand = EWalletApp.getUserObject();
+		
+		String incomeInfo; 		// Used to store Source, amount, Month
+		String type; 			// User input from filter text field
 
+		EWalletApp.reportListModel.clear();
+		
+		type = EWalletApp.filterInput.getText();
+		
+		// Gets filtered information for Report Income
+		for (Wage wage: userAtHand.getWages()) {
+			if (wage.source.equals(type)) {
+				incomeInfo = "Source: " + wage.source + "    Amount: " + wage.amount + "    Month: " + wage.Month;
+				EWalletApp.reportListModel.addElement(incomeInfo);
+			}
+		}		
 	}
 
 	@Override
 	public void PrintExpensebyType() {
-		// TODO Auto-generated method stub
-
+		
+		User userAtHand = EWalletApp.getUserObject();
+		
+		EWalletApp.reportListModel.clear();
+		ArrayList <String>expenseTypes = new ArrayList<String>();
+		ArrayList <Double>expenseTypeTotals = new ArrayList<Double>();
+		
+		String expenseInfo;
+		String type;
+		type = EWalletApp.filterInput.getText();
+		
+		for (Expense expense: userAtHand.getExpenses()) {
+			if (expense.source.equals(type)) {
+				expenseInfo = "Source: " + expense.source + "    Amount: " + expense.amount + "    Yearly Frequency: " + expense.yearlyfrequency;
+				EWalletApp.reportListModel.addElement(expenseInfo);
+			}
+		}
 	}
 
 	public void IOError(String error) {
@@ -124,9 +199,69 @@ public class ExpenseCalulator implements Expenser {
 	}
 	
 	@Override
+	// As a user I would like to choose a report and export it as an external file (any type is fine preferences are csv or JSON)
 	public void exportReport(String reportTitle) {
-		// TODO Auto-generated method stub
-
+		//stores the path and name of the file to be created.
+		String fullFilepath = filePath + reportTitle + ".csv";
+		User userAtHand = null;
+		for(User user : gui.AllUsers) {
+			if(user.username.equals(gui.CurrentUser)){
+				userAtHand = user;
+				break;
+			}
+		}
+		
+		//create the file in the destination. 
+		File file = new File(fullFilepath);
+		try {
+			if(file.createNewFile() == false) {
+				System.out.println("File " + reportTitle + ".csv has been overwritten. "); 
+			}
+		}
+		catch(IOException e) {
+			IOError(e.toString());
+			return;
+		}
+		
+		//write the data to file.
+		try {
+			FileWriter writer = new FileWriter(file);
+			
+			if(kindOfReport.equals("Income")) {
+				writer.write("source,amount,month\n");
+				for(Wage income : userAtHand.getWages()) {
+					writer.write(income.source + "," + income.amount + "," + income.Month + "\n");
+				}
+			}
+			else if(kindOfReport.equals("IncomeByType")) {
+				writer.write("source,amount,month\n");
+				for(Wage income : userAtHand.getWages()) {
+					if(income.source.equals(reportType)) {
+						writer.write(income.source + "," + income.amount + "," + income.Month + "\n");
+					}
+				}
+			}
+			else if(kindOfReport.equals("Expense")) {
+				writer.write("source,amount,yearly_frequency\n");
+				for(Expense spending : userAtHand.getExpenses()) {
+					writer.write(spending.source + "," + spending.amount + "," + spending.yearlyfrequency + "\n");
+				}
+			}
+			else if(kindOfReport.equals("ExpenseByType")) {
+				writer.write("source,amount,yearly_frequency\n");
+				for(Expense spending : userAtHand.getExpenses()) {
+					if(spending.source.equals(reportType)) {
+						writer.write(spending.source + "," + spending.amount + "," + spending.yearlyfrequency + "\n");
+					}
+				}
+			}
+			
+			writer.close();
+		}
+		catch(IOException e) {
+			IOError(e.toString());
+			return;
+		}
 	}
 
 	@Override
@@ -152,7 +287,13 @@ public class ExpenseCalulator implements Expenser {
 	@Override
 	public boolean loadExpenseFile(String filePath) {
 		File loadedFile = null;
-		
+		User userAtHand = null;
+		for(User user : gui.AllUsers) {
+			if(user.username.equals(gui.CurrentUser)){
+				userAtHand = user;
+				break;
+			}
+		}
 		
 		try {
 			loadedFile = new File(filePath);
@@ -213,7 +354,9 @@ public class ExpenseCalulator implements Expenser {
 				}
 				
 				//if all three data points work, add a new expense.
-				expenses.add(new Expense(source, amount, yearlyFrequency));
+				Expense exp = new Expense(source, amount, yearlyFrequency);
+				expenses.add(exp);
+				database.AddExpense(exp, userAtHand);
 			}
 			
 			br.close();
@@ -237,7 +380,13 @@ public class ExpenseCalulator implements Expenser {
 	@Override
 	public boolean loadIncomeFile(String filePath) {
 		File loadedFile = null;
-		
+		User userAtHand = null;
+		for(User user : gui.AllUsers) {
+			if(user.username.equals(gui.CurrentUser)){
+				userAtHand = user;
+				break;
+			}
+		}
 		
 		try {
 			loadedFile = new File(filePath);
@@ -291,7 +440,9 @@ public class ExpenseCalulator implements Expenser {
 				month = splitLine[2];
 				
 				//if all three data points work, add a new expense.
-				incomes.add(new Wage(source, amount, month));
+				Wage inc = new Wage(source, amount, month);
+				incomes.add(inc);
+				database.AddIncome(inc, userAtHand);
 			}
 			
 			br.close();
