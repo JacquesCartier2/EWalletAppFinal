@@ -1,0 +1,5 @@
+Type, Source, Amount, Frequency/Month
+Income,wendys,300.0,JULY
+Income,wendys,300.0,JANUARY
+Income,walmart,300.0,JULY
+Expense,Walmart,150.0,1

@@ -23,9 +23,9 @@ public class EWalletApp extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
 
-    private ArrayList<User> AllUsers = new ArrayList<User>();
+    public static ArrayList<User> AllUsers = new ArrayList<User>();
     Currency C = new Currency(1.00, "USD");
-    private String CurrentUser = "";
+    public static String CurrentUser = "";
 
     // JTextFields
     private JTextField txtLoginUserName;
@@ -40,6 +40,7 @@ public class EWalletApp extends JFrame {
     private JTextField txtRegisterPassword;
     private JTextField txtBalance;
     private JTextField txtMonthlySavings;
+    static JTextField filterField = new JTextField();
 
     ExpenseCalulator expenserCalulator = new ExpenseCalulator();
     Database database = new Database();
@@ -49,11 +50,13 @@ public class EWalletApp extends JFrame {
     private JPanel mainMenuPanel;
     private JPanel reportPagePanel;
     
+    public int i; //expense/income trigger
+    
     
     // Generates ReportListModel List for JList GUI use 
     // TODO CAN BE MOVED TO ANOTHER CLASS IF NEEDED
     // TODO THIS WILL MOST LIKELY BE REPLACED BY DATABASE 
-   	DefaultListModel<String> reportListModel = new DefaultListModel<>();;
+   	public static DefaultListModel<String> reportListModel = new DefaultListModel<>();;
    	
    	// Used for File Chooser
  	JFileChooser importFile = new JFileChooser("C:\\",FileSystemView.getFileSystemView());
@@ -83,6 +86,13 @@ public class EWalletApp extends JFrame {
      * Create the frame.
      */
     public EWalletApp() {
+    	//connect to the database and get data.
+    	database.Connect();
+    	expenserCalulator.database = database;
+    	AllUsers = database.GetAllData();
+    	
+    	expenserCalulator.gui = this;
+    	
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 635, 527);
         contentPane = new JPanel();
@@ -103,11 +113,6 @@ public class EWalletApp extends JFrame {
     }
 
     private void initializeLoginPanel() {
-    	//connect to the database and get data.
-    	database.Connect();
-    	expenserCalulator.database = database;
-    	AllUsers = database.GetAllData();
-
     	loginPanel = new JPanel();
     	loginPanel.setBounds(43, 31, 527, 406);
     	contentPane.add(loginPanel);
@@ -457,7 +462,12 @@ public class EWalletApp extends JFrame {
     	JButton exportReportButton = new JButton("Export Report");
     	exportReportButton.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-    			JOptionPane.showMessageDialog(null,"This button does nothing, yet! Add file chooser Functionality");
+    			expenserCalulator.filePath = "F:/";
+    			expenserCalulator.kindOfReport = "Expense";
+    			expenserCalulator.exportReport("expense");
+    			expenserCalulator.kindOfReport = "Income";
+    			expenserCalulator.exportReport("income");
+    			JOptionPane.showMessageDialog(null,"Reports Exported!");
     		}
     	});
     	exportReportButton.setBounds(360, 332, 125, 28); 
@@ -466,16 +476,17 @@ public class EWalletApp extends JFrame {
 
     }
 
+	public static JTextField filterInput = new JTextField();
 
     private void initializeReportPagePanel() {
     	reportPagePanel = new JPanel();
     	reportPagePanel.setBounds(43, 31, 550, 500);
     	contentPane.add(reportPagePanel);
     	reportPagePanel.setLayout(null);
+    	
+    	filterInput.setBounds(260, 0, 125, 20);
     	   	
     	// Adding JTextfields
-    	JTextField filterInput = new JTextField();
-    	filterInput.setBounds(260, 0, 125, 20);
     	reportPagePanel.add(filterInput);
     	
     	// Adding JList for Report Information 
@@ -487,8 +498,8 @@ public class EWalletApp extends JFrame {
     	 JButton incomeReportButton = new JButton("Income Report");
     	 incomeReportButton.addActionListener(new ActionListener() {
          	public void actionPerformed(ActionEvent e) {
-         		JOptionPane.showMessageDialog(null,"This button does nothing, yet!");
-         		reportListModel.addElement("Hello There, I am testing this");
+         		expenserCalulator.PrintIncomereport();
+         		i = 1;
          	}
          });
     	 incomeReportButton.setBounds(0, 0, 125, 20);
@@ -497,7 +508,8 @@ public class EWalletApp extends JFrame {
     	 JButton expenseReportButton = new JButton("Expense Report");
     	 expenseReportButton.addActionListener(new ActionListener() {
          	public void actionPerformed(ActionEvent e) {
-         		JOptionPane.showMessageDialog(null,"This button does nothing, yet!");
+         		expenserCalulator.PrintExpensereport();
+         		i = -1;
          	}
          });
     	 expenseReportButton.setBounds(130, 0, 125, 20);
@@ -505,9 +517,15 @@ public class EWalletApp extends JFrame {
     	 
     	 JButton filterButton = new JButton("Filter");
     	 filterButton.addActionListener(new ActionListener() {
-         	public void actionPerformed(ActionEvent e) {
-         		JOptionPane.showMessageDialog(null,"This button does nothing, yet!");
-         	}
+    		 public void actionPerformed(ActionEvent arg0) {
+
+ 				if (i == 1) {
+ 					expenserCalulator.PrintIncomereportbyTpe();
+ 				}
+ 				else if (i == -1)  {
+ 					expenserCalulator.PrintExpensebyType();
+ 				}
+ 			}
          });
     	 filterButton.setBounds(390, 0, 100, 20);
     	 reportPagePanel.add(filterButton);
@@ -568,7 +586,7 @@ public class EWalletApp extends JFrame {
         System.out.println(AllUsers.toString());
     }
 
-    public User getUserObject() {
+    public static User getUserObject() {
 
         for (int i = 0; i < AllUsers.size(); i++) {
 
