@@ -3,7 +3,6 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -417,7 +416,7 @@ public class EWalletApp extends JFrame {
     	mainMenuPanel.add(lblNewLabel_1);
 
     	// TODO ADDING BUTTON FOR REPORTS (INCOME, EXPENSE, AND SORT BY TYPE) 
-    	JButton reportsButton = new JButton("Report Page");
+    	JButton reportsButton = new JButton("Reports");
     	reportsButton.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			showReportPagePanel();
@@ -624,7 +623,7 @@ public class EWalletApp extends JFrame {
                     }
                 }
 
-                txtBalance.setText(String.valueOf(incomeTotal - expensesTotal));
+                txtBalance.setText("$" + String.valueOf(incomeTotal - expensesTotal));
                 break; // Exit the loop once the current user is found
             }
         }
@@ -636,7 +635,7 @@ public class EWalletApp extends JFrame {
             User currentUser = AllUsers.get(i);
             if (currentUser.username.equals(CurrentUser)) {
 
-                txtMonthlySavings.setText(String.valueOf(expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
+                txtMonthlySavings.setText("$" + String.valueOf(expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
                 break; // Exit the loop once the current user is found
             }
         }
