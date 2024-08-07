@@ -182,38 +182,16 @@ public class ExpenseCalulator implements Expenser {
 		ArrayList <String>expenseTypes = new ArrayList<String>();
 		ArrayList <Double>expenseTypeTotals = new ArrayList<Double>();
 		
-		String rep1 = ("Creating Expense By Type report...");
-		EWalletApp.reportListModel.addElement(rep1);
+		String expenseInfo;
+		String type;
+		type = EWalletApp.filterInput.getText();
 		
-		int i;
-		//print expenses
-		String rep2 = ("Expenses By Type:");
-		EWalletApp.reportListModel.addElement(rep2);
-		for (i=0; i<userAtHand.getExpenses().size(); i++) {		
-			//check if the source is already a recorded type
-			if (expenseTypes.contains(userAtHand.getExpenses().get(i).source.toUpperCase())) {
-				//get the index of the type in the type list
-				int index = expenseTypes.indexOf(userAtHand.getExpenses().get(i).source.toUpperCase());
-				
-				//add the amount to the totals by types list in the same index spot
-				double newExpenseTotal = expenseTypeTotals.get(index) + ((userAtHand.getExpenses().get(i).amount) * (userAtHand.getExpenses().get(i).yearlyfrequency));
-				expenseTypeTotals.set(index, newExpenseTotal);
-				
-			}
-			//if the type isn't in the list add the source to the type list and the amount to the total by type list
-			else {
-				expenseTypes.add(userAtHand.getExpenses().get(i).source.toUpperCase());
-				expenseTypeTotals.add((userAtHand.getExpenses().get(i).amount) * (userAtHand.getExpenses().get(i).yearlyfrequency));
+		for (Expense expense: userAtHand.getExpenses()) {
+			if (expense.source.equals(type)) {
+				expenseInfo = "Source: " + expense.source + "    Amount: " + expense.amount + "    Yearly Frequency: " + expense.yearlyfrequency;
+				EWalletApp.reportListModel.addElement(expenseInfo);
 			}
 		}
-		System.out.println();
-		
-		System.out.println("Summary: ");
-		for (i=0; i<expenseTypes.size(); i++) {
-			String rep4 = ("Expense Type: " + expenseTypes.get(i) + " Total Expenses: " + expenseTypeTotals.get(i));
-			EWalletApp.reportListModel.addElement(rep4);
-		}
-		System.out.println();
 	}
 
 	public void IOError(String error) {
