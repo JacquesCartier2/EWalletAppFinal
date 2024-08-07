@@ -718,7 +718,7 @@ public class EWalletApp extends JFrame {
                     }
                 }
 
-                txtBalance.setText("$" + String.valueOf(incomeTotal - expensesTotal));
+                txtBalance.setText(String.valueOf(incomeTotal - expensesTotal));
                 break; // Exit the loop once the current user is found
             }
         }
@@ -730,7 +730,7 @@ public class EWalletApp extends JFrame {
             User currentUser = AllUsers.get(i);
             if (currentUser.username.equals(CurrentUser)) {
 
-                txtMonthlySavings.setText("$" + String.valueOf(expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
+                txtMonthlySavings.setText(String.valueOf(expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
                 break; // Exit the loop once the current user is found
             }
         }
