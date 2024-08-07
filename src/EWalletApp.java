@@ -256,7 +256,7 @@ public class EWalletApp extends JFrame {
     	mainMenuPanel.add(txtExpenceSource);
     	txtExpenceSource.setColumns(10);
 
-    	JLabel lblExpenseAmount = new JLabel("Amount:          $");
+    	JLabel lblExpenseAmount = new JLabel("Amount:      $");
     	lblExpenseAmount.setBounds(30, 221, 96, 13);
     	mainMenuPanel.add(lblExpenseAmount);
 
@@ -305,7 +305,7 @@ public class EWalletApp extends JFrame {
     	mainMenuPanel.add(txtIncomeSource);
     	txtIncomeSource.setColumns(10);
 
-    	JLabel lblIncomeAmount = new JLabel("Amount:            $");
+    	JLabel lblIncomeAmount = new JLabel("Amount:        $");
     	lblIncomeAmount.setBounds(280, 221, 96, 13);
     	mainMenuPanel.add(lblIncomeAmount);
 
