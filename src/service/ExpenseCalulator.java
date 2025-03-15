@@ -43,51 +43,6 @@ public class ExpenseCalulator {
 		user.addWage(income);
 	}
 
-	public void PrintFullreport(User user) {
-		double totalIncome = 0;
-		double totalExpense = 0;
-		ArrayList<Wage> incomeTransactions = new ArrayList<>();
-		ArrayList<Expense> expenseTransactions = new ArrayList<>();
-
-		// Process transactions for the given user
-		for (Wage wage : user.getWages()) {
-			totalIncome += wage.getAmount();
-			incomeTransactions.add(wage);
-		}
-		for (Expense expense : user.getExpenses()) {
-			double annualExpense = expense.getAmount() * expense.getYearlyfrequency();
-			totalExpense += annualExpense;
-			expenseTransactions.add(expense);
-		}
-
-		// Calculate summary info
-		double netBalance = totalIncome - totalExpense;
-
-		// Print detailed report
-		StringBuilder report = new StringBuilder();
-		report.append("DETAILED REPORT\n");
-
-		report.append("\nIncome:\n");
-		for (Wage income : incomeTransactions) {
-			report.append("- " + income.getSource() + ": $" + income.getAmount() + " (" + income.getMonth()
-					+ ")\n");
-		}
-
-		report.append("\nExpenses:\n");
-		for (Expense expense : expenseTransactions) {
-			report.append("- " + expense.getSource() + ": $" + expense.getAmount() + " (Frequency: "
-					+ expense.getYearlyfrequency() + ")\n");
-		}
-
-		// Print summary info
-		report.append("\nSUMMARY\n");
-		report.append("Total Income: $" + totalIncome + "\n");
-		report.append("Total Expenses: $" + totalExpense + "\n");
-		report.append("Net Balance: $" + netBalance + "\n");
-
-		JOptionPane.showMessageDialog(null, report.toString());
-	}
-
 	public void exportReportToCSV(User user) throws IOException {
 		FileWriter csvWriter = new FileWriter(user.getUserName() + "_report.csv");
 		csvWriter.append("Type, Source, Amount, Frequency/Month\n");
@@ -214,97 +169,97 @@ public class ExpenseCalulator {
 	}
 
 
-	public boolean loadExpenseFile(String filePath) {
-		File loadedFile = null;
-		User userAtHand = null;
-		for(User user : gui.AllUsers) {
-			if(user.username.equals(gui.CurrentUser)){
-				userAtHand = user;
-				break;
-			}
-		}
-		
-		try {
-			loadedFile = new File(filePath);
-		}
-		catch(Exception E) {
-			IOError("file not found. ");
-		}
-		
-		try {
-			ArrayList<Expense> expenses = new ArrayList<Expense>(); //data read from the file will be stored here and added to userAtHand if no problems occur. 
-			
-			BufferedReader br = new BufferedReader(new FileReader(loadedFile));
-			String line = "";
-			String source;
-			double amount;
-			int yearlyFrequency;
-			int lineNumber = 1; //used to keep track of which line is being read. 
-			
-			br.readLine(); //first line contains data field names and should be skipped. 
-			
-			while ((line = br.readLine()) != null) {   //go through each line in the file
-				lineNumber++;
-				
-				//if a line is completely empty, ignore it.
-				if(line.equals("")) {
-					continue;
-				}
-				
-				String[] splitLine = line.split(",");   // use comma as separator to split the line into parts.
-				
-				if(splitLine.length < 3) {
-					IOError("invalid data on line " + lineNumber + ", 3 data points are required for each line. ");
-					br.close();
-					return false;
-				}
-				
-				//first data point is source. 
-				source = splitLine[0];
-				
-				//second data point is amount, must be parse-able as double. 
-				try {
-					amount = Double.parseDouble(splitLine[1]);
-				}
-				catch(Exception E) {
-					IOError("invalid data on line " + lineNumber + ", second data point must be a number. ");
-					br.close();
-					return false;
-				}
-				
-				//third data point is yearly frequency, must be parse-able as int. 
-				try {
-					yearlyFrequency = Integer.parseInt(splitLine[2]);
-				}
-				catch(Exception E) {
-					IOError("invalid data on line " + lineNumber + ", third data point must be an integer. ");
-					br.close();
-					return false;
-				}
-				
-				//if all three data points work, add a new expense.
-				Expense exp = new Expense(source, amount, yearlyFrequency);
-				expenses.add(exp);
-				database.AddExpense(exp, userAtHand);
-			}
-			
-			br.close();
-			
-			//if no problems occurred while reading the data, add everything from expenses to the userAtHand's Spending list. 
-			for(Expense exp : expenses) {
-				userAtHand.addExpenseList(exp);
-			}
-			
-			// Update Monthly Savings 
-			FinancialCalculator.updateMonthlySavings(userAtHand);
-			
-			return true;
-		}
-		catch(Exception E){
-			IOError(E.toString());
-			return false;
-		}
-	}
+//	public boolean loadExpenseFile(String filePath) {
+//		File loadedFile = null;
+//		User userAtHand = null;
+//		for(User user : gui.AllUsers) {
+//			if(user.username.equals(gui.CurrentUser)){
+//				userAtHand = user;
+//				break;
+//			}
+//		}
+//		
+//		try {
+//			loadedFile = new File(filePath);
+//		}
+//		catch(Exception E) {
+//			IOError("file not found. ");
+//		}
+//		
+//		try {
+//			ArrayList<Expense> expenses = new ArrayList<Expense>(); //data read from the file will be stored here and added to userAtHand if no problems occur. 
+//			
+//			BufferedReader br = new BufferedReader(new FileReader(loadedFile));
+//			String line = "";
+//			String source;
+//			double amount;
+//			int yearlyFrequency;
+//			int lineNumber = 1; //used to keep track of which line is being read. 
+//			
+//			br.readLine(); //first line contains data field names and should be skipped. 
+//			
+//			while ((line = br.readLine()) != null) {   //go through each line in the file
+//				lineNumber++;
+//				
+//				//if a line is completely empty, ignore it.
+//				if(line.equals("")) {
+//					continue;
+//				}
+//				
+//				String[] splitLine = line.split(",");   // use comma as separator to split the line into parts.
+//				
+//				if(splitLine.length < 3) {
+//					IOError("invalid data on line " + lineNumber + ", 3 data points are required for each line. ");
+//					br.close();
+//					return false;
+//				}
+//				
+//				//first data point is source. 
+//				source = splitLine[0];
+//				
+//				//second data point is amount, must be parse-able as double. 
+//				try {
+//					amount = Double.parseDouble(splitLine[1]);
+//				}
+//				catch(Exception E) {
+//					IOError("invalid data on line " + lineNumber + ", second data point must be a number. ");
+//					br.close();
+//					return false;
+//				}
+//				
+//				//third data point is yearly frequency, must be parse-able as int. 
+//				try {
+//					yearlyFrequency = Integer.parseInt(splitLine[2]);
+//				}
+//				catch(Exception E) {
+//					IOError("invalid data on line " + lineNumber + ", third data point must be an integer. ");
+//					br.close();
+//					return false;
+//				}
+//				
+//				//if all three data points work, add a new expense.
+//				Expense exp = new Expense(source, amount, yearlyFrequency);
+//				expenses.add(exp);
+//				database.AddExpense(exp, userAtHand);
+//			}
+//			
+//			br.close();
+//			
+//			//if no problems occurred while reading the data, add everything from expenses to the userAtHand's Spending list. 
+//			for(Expense exp : expenses) {
+//				userAtHand.addExpenseList(exp);
+//			}
+//			
+//			// Update Monthly Savings 
+//			FinancialCalculator.updateMonthlySavings(userAtHand);
+//			
+//			return true;
+//		}
+//		catch(Exception E){
+//			IOError(E.toString());
+//			return false;
+//		}
+//	}
 
 	public boolean loadIncomeFile(String filePath) {
 		File loadedFile = null;

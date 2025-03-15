@@ -365,7 +365,7 @@ public class EWalletApp extends JFrame {
     		public void actionPerformed(ActionEvent e) {
     			User user = getUserObject();
     			if (user != null) {
-    				expenserCalulator.PrintFullreport(user);
+    				ReportGenerator.generateFullReport(user);
     			} else {
     				JOptionPane.showMessageDialog(null, "User Not Found!");
     			}
@@ -429,7 +429,7 @@ public class EWalletApp extends JFrame {
 				importFile.showSaveDialog(null);
 
 				if (importFile.getSelectedFile() != null) {
-					expenserCalulator.loadExpenseFile(importFile.getSelectedFile().getAbsolutePath());
+					//expenserCalulator.loadExpenseFile(importFile.getSelectedFile().getAbsolutePath());
 				}
 			}
 		});
