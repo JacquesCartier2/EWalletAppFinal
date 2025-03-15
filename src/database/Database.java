@@ -1,3 +1,4 @@
+package database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -5,10 +6,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import model.Expense;
+import model.User;
+import model.Wage;
+
 //this class contains all code used to interact with the database. 
 public class Database {
-	private String connectionLink = "jdbc:derby:F:\\Program Files\\Apache Derby DB\\Databases\\SENG210_Final;create=false";
-	//private static String connectionLink="jdbc:derby:C:/Users/elgu4/SENG210_Final"; //create=false";
+	//private String connectionLink = "jdbc:derby:F:\\Program Files\\Apache Derby DB\\Databases\\SENG210_Final;create=false";
+	private static String connectionLink="jdbc:derby:C:/Users/elgu4/SENG210_Final"; //create=false";
 	private static Connection connection = null; 
 	private static Statement statement = null;
 	

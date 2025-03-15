@@ -1,8 +1,9 @@
+package model;
 
 public class Wage {
-	String source;
-	double amount;
-	String Month;
+	public String source;
+	public double amount;
+	public String Month;
 	private int ID;
 	
 	public Wage(String source, double amount, String month) {

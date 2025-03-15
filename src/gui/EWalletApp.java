@@ -1,5 +1,5 @@
+package gui;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -8,8 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,13 +17,22 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import java.io.IOException;
-import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileSystemView;
+
+import currency.Currency;
+import currency.CurrencyConverter;
+import database.Database;
+import service.ExpenseCalulator;
+import service.FinancialCalculator;
+import service.ReportGenerator;
+import model.Expense;
+import model.User;
+import model.Wage;
+
 import javax.swing.event.ListSelectionEvent;
 
 public class EWalletApp extends JFrame {
@@ -62,10 +69,7 @@ public class EWalletApp extends JFrame {
     
     public int i; //expense/income trigger
     
-    
-    // Generates ReportListModel List for JList GUI use 
-    // TODO CAN BE MOVED TO ANOTHER CLASS IF NEEDED
-    // TODO THIS WILL MOST LIKELY BE REPLACED BY DATABASE 
+     
    	public static DefaultListModel<String> reportListModel = new DefaultListModel<>();;
    	
    	// Used for File Chooser
@@ -396,7 +400,7 @@ public class EWalletApp extends JFrame {
     				int outSaveAmount;
     				String name = LstCurrency.getSelectedValue();
 
-    				expenserCalulator.convertForeignCurrency(C, name);
+    				CurrencyConverter.convert(C, name);
 
     				outBalAmount = (int) (inBalAmount * C.getRate());
     				txtBalance.setText(String.valueOf(outBalAmount));
@@ -410,7 +414,6 @@ public class EWalletApp extends JFrame {
     	JButton importIncomeFileButton	= new JButton("Import Income File");			// Used in mainPanel()
     	JButton importExpenseFileButton = new JButton("Import Expense File");
     	
-		// TODO Import File Button Action
 		importIncomeFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				importFile.showSaveDialog(null);
@@ -435,7 +438,6 @@ public class EWalletApp extends JFrame {
     	lblNewLabel_1.setBounds(63, 14, 108, 13);
     	mainMenuPanel.add(lblNewLabel_1);
 
-    	// TODO ADDING BUTTON FOR REPORTS (INCOME, EXPENSE, AND SORT BY TYPE) 
     	JButton reportsButton = new JButton("Reports");
     	reportsButton.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
@@ -445,7 +447,8 @@ public class EWalletApp extends JFrame {
     	reportsButton.setBounds(100, 332, 125, 28); 
     	mainMenuPanel.add(reportsButton);
     	
-    	class NewFrame extends JFrame {
+    	@SuppressWarnings("serial")
+		class NewFrame extends JFrame {
     	    public NewFrame() {
     	        // Set up the new frame
     	        setSize(300, 200);
@@ -453,12 +456,10 @@ public class EWalletApp extends JFrame {
     	    }
     	}
 
-    	// TODO ADDING BUTTONS FOR IMPORTING AND EXPORTING REPORTS
     	JButton importReportButton = new JButton("Import Report");
     	importReportButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				NewFrame newFrame = new NewFrame();
 				newFrame.setTitle("Import Income File");
 				newFrame.add(importIncomeFileButton);
@@ -477,8 +478,6 @@ public class EWalletApp extends JFrame {
     	mainMenuPanel.add(importReportButton);
     	
     	
-
-    	// TODO ADDING BUTTONS FOR IMPORTING AND EXPORTING REPORTS
     	JButton exportReportButton = new JButton("Export Report");
     	exportReportButton.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
@@ -518,7 +517,8 @@ public class EWalletApp extends JFrame {
     	 JButton incomeReportButton = new JButton("Income Report");
     	 incomeReportButton.addActionListener(new ActionListener() {
          	public void actionPerformed(ActionEvent e) {
-         		expenserCalulator.PrintIncomereport();
+         		//expenserCalulator.PrintIncomereport();
+         		ReportGenerator.generateIncomeReport(getUserObject());
          		i = 1;
          	}
          });
@@ -528,7 +528,8 @@ public class EWalletApp extends JFrame {
     	 JButton expenseReportButton = new JButton("Expense Report");
     	 expenseReportButton.addActionListener(new ActionListener() {
          	public void actionPerformed(ActionEvent e) {
-         		expenserCalulator.PrintExpensereport();
+         		//expenserCalulator.PrintExpensereport();
+         		ReportGenerator.generateExpenseReport(getUserObject());
          		i = -1;
          	}
          });
@@ -749,7 +750,7 @@ public class EWalletApp extends JFrame {
             User currentUser = AllUsers.get(i);
             if (currentUser.username.equals(CurrentUser)) {
 
-            	txtMonthlySavings.setText(String.format("%.2f", expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
+            	txtMonthlySavings.setText(String.format("%.2f", FinancialCalculator.updateMonthlySavings(AllUsers.get(i))));
             	//txtMonthlySavings.setText(String.valueOf(expenserCalulator.updateMonthlySavings(AllUsers.get(i))));
                 break; // Exit the loop once the current user is found
             }
@@ -757,3 +758,4 @@ public class EWalletApp extends JFrame {
     }
 
 }
+// 760 Lines

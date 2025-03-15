@@ -1,3 +1,6 @@
+package interfaces;
+import currency.Currency;
+import model.User;
 
 public interface Expenser {
 

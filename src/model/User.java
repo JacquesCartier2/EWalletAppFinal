@@ -1,3 +1,4 @@
+package model;
 import java.util.ArrayList;
 
 public class User {
@@ -5,12 +6,12 @@ public class User {
 	private ArrayList <Expense>Spending; //user's expenses 
 	private int ID;
 
-	String username;
+	public String username;
 	String pwd;
 	//current total income - total 
 	double balance;
 	// possible monthly savings, calculated using monthly income (most recent) assuming the data we have is for one year, and monthly and biweekly expenses, here you can assume yearly expenses that are recorded have already been paid. 
-	double monthlysavings;	
+	public double monthlysavings;	
 
 	public User(String username,String password){
 		this.username = username;

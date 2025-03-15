@@ -1,3 +1,4 @@
+package currency;
 
 public class Currency {
 	public double rate;

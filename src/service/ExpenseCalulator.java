@@ -1,3 +1,4 @@
+package service;
 import java.io.BufferedReader;
 import java.io.*;
 import java.io.FileReader;
@@ -5,22 +6,25 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+
+import database.Database;
+import gui.EWalletApp;
+import model.Expense;
+import model.User;
+import model.Wage;
 
 import java.time.LocalDate;
 
-public class ExpenseCalulator implements Expenser {
+public class ExpenseCalulator {
 	public Database database = null;
 	public String filePath; //the filepath where new files are created. 
 	public String reportType;
 	public String kindOfReport;
 	public EWalletApp gui;
 
-	@Override
 	public void addExpense(User user, String source, double amount, int yearlyfrequency) {
 		Expense expense = new Expense(source, amount, yearlyfrequency);
 		
@@ -30,7 +34,6 @@ public class ExpenseCalulator implements Expenser {
 		user.addExpense(expense);
 	}
 
-	@Override
 	public void addMonthlyIncome(User user, String source, double amount, String month) {
 		Wage income = new Wage(source, amount, month);
 		
@@ -40,7 +43,6 @@ public class ExpenseCalulator implements Expenser {
 		user.addWage(income);
 	}
 
-	@Override
 	public void PrintFullreport(User user) {
 		double totalIncome = 0;
 		double totalExpense = 0;
@@ -100,58 +102,7 @@ public class ExpenseCalulator implements Expenser {
 		csvWriter.close();
 	}
 
-	@Override
-	// As a user I would like to view a detailed report of all expenses, and summary
-	// information for expenses
-	public void PrintExpensereport() {
-		
-		User userAtHand = EWalletApp.getUserObject();
-		EWalletApp.reportListModel.clear();
-		double totalExpenses = 0;
 
-		String rep1 = ("Creating Expense report...");
-		EWalletApp.reportListModel.addElement(rep1);
-		String lineBreak = "";
-		EWalletApp.reportListModel.addElement(lineBreak);
-
-		int i;
-		// print expenses
-		String rep2 = ("Expenses:");
-		EWalletApp.reportListModel.addElement(rep2);
-		for (i = 0; i < userAtHand.getExpenses().size(); i++) {
-			String rep3 = ("Source: " + userAtHand.getExpenses().get(i).source + " Amount: "
-					+ userAtHand.getExpenses().get(i).amount + " Frequency (per year): "
-					+ userAtHand.getExpenses().get(i).yearlyfrequency);
-			EWalletApp.reportListModel.addElement(rep3);
-			// collect total expenses
-			totalExpenses = totalExpenses
-					+ ((userAtHand.getExpenses().get(i).amount) * (userAtHand.getExpenses().get(i).yearlyfrequency));
-		}
-		System.out.println();
-
-		String rep20 = ("Total Expenses: " + totalExpenses);
-		EWalletApp.reportListModel.addElement(rep20);
-	}
-
-	@Override
-	//As  a user I would like to view a detailed report of all income, and summary information for income
-	public void PrintIncomereport() {
-		
-		User userAtHand = EWalletApp.getUserObject();
-		
-		String incomeInfo; 		// Used to store Source, amount, Month
-	
-		// Clears Current List information and prints updates
-		EWalletApp.reportListModel.clear();
-		
-		// Gets information for Report Income
-		for (Wage wage: userAtHand.getWages()) {
-			incomeInfo = "Source: " + wage.source + "    Amount: " + wage.amount + "    Month: " + wage.Month;
-			EWalletApp.reportListModel.addElement(incomeInfo);
-		}
-	}
-
-	@Override
 	//As  a user I would like to view a detailed report of income of a certain type, and summary information for income
 	public void PrintIncomereportbyTpe(){
 		
@@ -173,7 +124,6 @@ public class ExpenseCalulator implements Expenser {
 		}		
 	}
 
-	@Override
 	public void PrintExpensebyType() {
 		
 		User userAtHand = EWalletApp.getUserObject();
@@ -198,7 +148,6 @@ public class ExpenseCalulator implements Expenser {
 		gui.PopupMessage("IO Error: " + error);
 	}
 	
-	@Override
 	// As a user I would like to choose a report and export it as an external file (any type is fine preferences are csv or JSON)
 	public void exportReport(String reportTitle) {
 		//stores the path and name of the file to be created.
@@ -264,27 +213,7 @@ public class ExpenseCalulator implements Expenser {
 		}
 	}
 
-	@Override
-	public Currency convertForeignCurrency(Currency C, String name) {
 
-		// Convert to Canadian Dollar CAD
-		final double CADRATE = 1.37;
-		final double USDRATE = .73;
-
-		if (name.equals("USD")) {
-			C.setRate(CADRATE);
-		}
-
-		if (name.equals("CAD")) {
-			C.setRate(USDRATE);
-		}
-		// need to use printf to limit decmail places
-
-		return C;
-
-	}
-
-	@Override
 	public boolean loadExpenseFile(String filePath) {
 		File loadedFile = null;
 		User userAtHand = null;
@@ -367,7 +296,7 @@ public class ExpenseCalulator implements Expenser {
 			}
 			
 			// Update Monthly Savings 
-			updateMonthlySavings(userAtHand);
+			FinancialCalculator.updateMonthlySavings(userAtHand);
 			
 			return true;
 		}
@@ -377,7 +306,6 @@ public class ExpenseCalulator implements Expenser {
 		}
 	}
 
-	@Override
 	public boolean loadIncomeFile(String filePath) {
 		File loadedFile = null;
 		User userAtHand = null;
@@ -452,7 +380,7 @@ public class ExpenseCalulator implements Expenser {
 				userAtHand.addIncomeList(inc);
 			}
 			// Updates Monthly savings
-			updateMonthlySavings(userAtHand);
+			FinancialCalculator.updateMonthlySavings(userAtHand);
 			
 			return true;
 		}
@@ -462,7 +390,6 @@ public class ExpenseCalulator implements Expenser {
 		}
 	}
 
-	@Override
 	public int whenCanIBuy(String itemname, double price, User user) {
 				
 		if (user.monthlysavings < 0) {
@@ -471,49 +398,5 @@ public class ExpenseCalulator implements Expenser {
 		
 		return (int) Math.ceil(price / user.monthlysavings);
 	}
-
-	public double updateMonthlySavings(User user) {
-		double monthlyExpenses = 0;
-		double monthlyIncome = 0;
-		double monthlySavings = 0;
-		
-		// Gets all expense from user that is logged in 
-		ArrayList<Expense> listOfExpense = user.getExpenses();
-        if (listOfExpense != null) {
-            for (int expenseNum = 0; expenseNum < listOfExpense.size(); expenseNum++) {
-                Expense currentExpense = listOfExpense.get(expenseNum);
-                monthlyExpenses += (currentExpense.amount * currentExpense.yearlyfrequency) / 12;
-            }
-        }
-        
-        // Gets all Wages from user that is logged in
-        ArrayList<Wage> listOfIncome = user.getWages();
-        if (listOfIncome != null) {
-            for (int incomeNum = 0; incomeNum < listOfIncome.size(); incomeNum++) {
-                Wage currentIncome = listOfIncome.get(incomeNum);
-                
-                // Gets Current Month from LocalDate Class 
-                LocalDate currentDate = LocalDate.now();
-                String currentMonth = currentDate.getMonth().toString();
-                
-                System.out.println(currentMonth);
-                
-                if (currentMonth.equals(currentIncome.Month.toUpperCase())) {
-                	
-                	monthlyIncome += currentIncome.getAmount();
-                }  
-            }
-        }
-        
-        // Rounding to 2 decimal places for reflect currency      
-        monthlySavings =  monthlyIncome - monthlyExpenses;	
-        
-        BigDecimal bd = new BigDecimal(Double.toString(monthlySavings));
-        monthlySavings = (bd.setScale(2, RoundingMode.HALF_UP)).doubleValue();
-        
-        user.monthlysavings = monthlySavings; // Fix for monthly savings on user not updating
-        
-		return monthlySavings;
-	}
-
 }
+// 520 Lines
