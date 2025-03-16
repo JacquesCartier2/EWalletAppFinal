@@ -1,4 +1,5 @@
 package service;
+
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -9,84 +10,126 @@ import model.User;
 import model.Wage;
 
 public class ReportGenerator {
-    public static void generateExpenseReport(User user) {
-        EWalletApp.reportListModel.clear();
-        double totalExpenses = 0;
+	public static void generateExpenseReport(User user) {
+		EWalletApp.reportListModel.clear();
+		double totalExpenses = 0;
 
-        // Add introductory messages
-        EWalletApp.reportListModel.addElement("Creating Expense report...");
-        EWalletApp.reportListModel.addElement("");
+		// Add introductory messages
+		EWalletApp.reportListModel.addElement("Creating Expense report...");
+		EWalletApp.reportListModel.addElement("");
 
-        // Add expense details
-        EWalletApp.reportListModel.addElement("Expenses:");
-        for (Expense expense : user.getExpenses()) {
-            String expenseInfo = "Source: " + expense.getSource() +
-                                 " Amount: " + expense.getAmount() +
-                                 " Frequency (per year): " + expense.getYearlyfrequency();
-            EWalletApp.reportListModel.addElement(expenseInfo);
-            totalExpenses += expense.getAmount() * expense.getYearlyfrequency();
-        }
+		// Add expense details
+		EWalletApp.reportListModel.addElement("Expenses:");
+		for (Expense expense : user.getExpenses()) {
+			String expenseInfo = "Source: " + expense.getSource() + " Amount: " + expense.getAmount()
+					+ " Frequency (per year): " + expense.getYearlyfrequency();
+			EWalletApp.reportListModel.addElement(expenseInfo);
+			totalExpenses += expense.getAmount() * expense.getYearlyfrequency();
+		}
 
-        // Add total expenses
-        EWalletApp.reportListModel.addElement("");
-        EWalletApp.reportListModel.addElement("Total Expenses: " + totalExpenses);
-    }
+		// Add total expenses
+		EWalletApp.reportListModel.addElement("");
+		EWalletApp.reportListModel.addElement("Total Expenses: " + totalExpenses);
+	}
 
-    public static void generateIncomeReport(User user) {
-        EWalletApp.reportListModel.clear();
+	public static void generateExpenseByType(User user, String type) {
+		EWalletApp.reportListModel.clear();
 
-        // Add income details
-        for (Wage wage : user.getWages()) {
-            String incomeInfo = "Source: " + wage.getSource() +
-                                "    Amount: " + wage.getAmount() +
-                                "    Month: " + wage.getMonth();
-            EWalletApp.reportListModel.addElement(incomeInfo);
-        }
-    }
-    
-    public static void generateFullReport(User user) {
-        double totalIncome = 0;
-        double totalExpense = 0;
-        ArrayList<Wage> incomeTransactions = new ArrayList<>();
-        ArrayList<Expense> expenseTransactions = new ArrayList<>();
+		EWalletApp.reportListModel.addElement("Expense Report for Type: " + type);
+		EWalletApp.reportListModel.addElement("");
 
-        // Process transactions for the given user
-        for (Wage wage : user.getWages()) {
-            totalIncome += wage.getAmount();
-            incomeTransactions.add(wage);
-        }
-        for (Expense expense : user.getExpenses()) {
-            double annualExpense = expense.getAmount() * expense.getYearlyfrequency();
-            totalExpense += annualExpense;
-            expenseTransactions.add(expense);
-        }
+		boolean found = false;
 
-        // Calculate summary info
-        double netBalance = totalIncome - totalExpense;
+		for (Expense expense : user.getExpenses()) {
+			if (expense.getSource().equals(type)) {
+				String expenseInfo = "Source: " + expense.getSource() + "    Amount: " + expense.getAmount()
+						+ "    Yearly Frequency: " + expense.getYearlyfrequency();
+				EWalletApp.reportListModel.addElement(expenseInfo);
+				found = true;
+			}
+		}
 
-        // Build detailed report as a string
-        StringBuilder report = new StringBuilder();
-        report.append("DETAILED REPORT\n");
+		if (!found) {
+			EWalletApp.reportListModel.addElement("No expenses found for this type.");
+		}
+	}
 
-        report.append("\nIncome:\n");
-        for (Wage income : incomeTransactions) {
-            report.append("- ").append(income.getSource()).append(": $")
-                  .append(income.getAmount()).append(" (").append(income.getMonth()).append(")\n");
-        }
+	public static void generateIncomeReport(User user) {
+		EWalletApp.reportListModel.clear();
 
-        report.append("\nExpenses:\n");
-        for (Expense expense : expenseTransactions) {
-            report.append("- ").append(expense.getSource()).append(": $")
-                  .append(expense.getAmount()).append(" (Frequency: ").append(expense.getYearlyfrequency()).append(")\n");
-        }
+		// Add income details
+		for (Wage wage : user.getWages()) {
+			String incomeInfo = "Source: " + wage.getSource() + "    Amount: " + wage.getAmount() + "    Month: "
+					+ wage.getMonth();
+			EWalletApp.reportListModel.addElement(incomeInfo);
+		}
+	}
 
-        // Append summary info
-        report.append("\nSUMMARY\n");
-        report.append("Total Income: $").append(totalIncome).append("\n");
-        report.append("Total Expenses: $").append(totalExpense).append("\n");
-        report.append("Net Balance: $").append(netBalance).append("\n");
+	public static void generateIncomeReportByType(User user, String type) {
+		EWalletApp.reportListModel.clear();
 
-        // Display report via JOptionPane
-        JOptionPane.showMessageDialog(null, report.toString());
-    }
+		EWalletApp.reportListModel.addElement("Income Report for Type: " + type);
+		EWalletApp.reportListModel.addElement("");
+
+		boolean found = false;
+
+		for (Wage wage : user.getWages()) {
+			if (wage.getSource().equalsIgnoreCase(type)) {
+				String incomeInfo = "Source: " + wage.getSource() + "    Amount: " + wage.getAmount() + "    Month: "
+						+ wage.getMonth();
+				EWalletApp.reportListModel.addElement(incomeInfo);
+				found = true;
+			}
+		}
+
+		if (!found) {
+			EWalletApp.reportListModel.addElement("No income records found for this type.");
+		}
+	}
+
+	public static void generateFullReport(User user) {
+		double totalIncome = 0;
+		double totalExpense = 0;
+		ArrayList<Wage> incomeTransactions = new ArrayList<>();
+		ArrayList<Expense> expenseTransactions = new ArrayList<>();
+
+		// Process transactions for the given user
+		for (Wage wage : user.getWages()) {
+			totalIncome += wage.getAmount();
+			incomeTransactions.add(wage);
+		}
+		for (Expense expense : user.getExpenses()) {
+			double annualExpense = expense.getAmount() * expense.getYearlyfrequency();
+			totalExpense += annualExpense;
+			expenseTransactions.add(expense);
+		}
+
+		// Calculate summary info
+		double netBalance = totalIncome - totalExpense;
+
+		// Build detailed report as a string
+		StringBuilder report = new StringBuilder();
+		report.append("DETAILED REPORT\n");
+
+		report.append("\nIncome:\n");
+		for (Wage income : incomeTransactions) {
+			report.append("- ").append(income.getSource()).append(": $").append(income.getAmount()).append(" (")
+					.append(income.getMonth()).append(")\n");
+		}
+
+		report.append("\nExpenses:\n");
+		for (Expense expense : expenseTransactions) {
+			report.append("- ").append(expense.getSource()).append(": $").append(expense.getAmount())
+					.append(" (Frequency: ").append(expense.getYearlyfrequency()).append(")\n");
+		}
+
+		// Append summary info
+		report.append("\nSUMMARY\n");
+		report.append("Total Income: $").append(totalIncome).append("\n");
+		report.append("Total Expenses: $").append(totalExpense).append("\n");
+		report.append("Net Balance: $").append(netBalance).append("\n");
+
+		// Display report via JOptionPane
+		JOptionPane.showMessageDialog(null, report.toString());
+	}
 }
